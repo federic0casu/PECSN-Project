@@ -18,8 +18,12 @@ void Antenna::handleMessage(cMessage *msg)
 {
 }
 
-void Antenna::handleFrame() {
+void Antenna::handleCQI()
+{
+}
 
+void Antenna::handleFrame()
+{
 }
 
 }

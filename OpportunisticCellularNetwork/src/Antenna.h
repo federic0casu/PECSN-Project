@@ -21,6 +21,7 @@ class Antenna : public cSimpleModule
   protected:
     virtual void initialize() override;
     virtual void handleMessage(cMessage *msg) override;
+    virtual void handleCQI();
     virtual void handleFrame();
 };
 
