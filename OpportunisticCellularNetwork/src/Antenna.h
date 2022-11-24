@@ -2,6 +2,7 @@
 #define __OPPORTUNISTICCELLULARNETWORK_ANTENNA_H_
 
 #include <omnetpp.h>
+#include <vector>
 
 using namespace omnetpp;
 
@@ -15,9 +16,12 @@ namespace opportunisticcellularnetwork {
 
 class Antenna : public cSimpleModule
 {
+  private:
+    vector<FifoQueue> queues;
   protected:
     virtual void initialize() override;
     virtual void handleMessage(cMessage *msg) override;
+    virtual void handleFrame();
 };
 
 }
