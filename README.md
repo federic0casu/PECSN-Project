@@ -19,5 +19,5 @@
       <li>Packet interarrival times are IID RVs.</li>
       <li>Service demands (in bytes) are IID RV.</li>
    </ul>
-   Study the <b>throughpuy</b> and <b>response time</b> of the above system with a varying workload.
+   Study the <b>throughput</b> and <b>response time</b> of the above system with a varying workload.
 </p>
