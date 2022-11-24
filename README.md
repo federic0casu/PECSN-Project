@@ -23,5 +23,6 @@
    <ul>
       <li>Exponential interarrivals, uniform service demands (the largest packet dimension is such that it fits a frame at the minimum CQI), uniform CQIs.</li>
       <li>Same as above, with binomial CQIs, chosen so that the mean CQI of different users are sensibly different.</li>
+		prova modifica daniel
    </ul>
 </p>
