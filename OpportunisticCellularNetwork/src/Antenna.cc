@@ -13,8 +13,11 @@ Define_Module(Antenna);
 void Antenna::initialize()
 {
     population = par("population").intValue();
+    timeslot = (simtime_t)par("timeslot").intValue();
 
     throughputSignal = registerSignal("throughputSignal");
+
+    lostPackets = sentPackets = 0;
 
     switch(par("stage").intValue()) {
         case 1:
@@ -54,10 +57,28 @@ void Antenna::initialize()
 
 void Antenna::handleMessage(cMessage *msg)
 {
-    //if(a CQI arrives) {
+    //
+    // CQIMessage *cqi = check_and_cast<CQIMessage*>(msg);
+    // PacketMessage *packet = check_and_cast<PacketMessage*>(msg);
+    //
+    //if(a CQI arrives)
+    //{
     //  int id = get id from CQI message;
     //  int CQI = get CQI from CQI message;
     //  handleCQI(id, CQI);
+    //  delete(CQI message);
+    //}
+    //else if(We have queues of finite dimension and a new packet has just arrived)
+    //{
+    //  if(user's queue is full)
+    //  {
+    //      lostPackets += 1;
+    //  }
+    //  else
+    //  {
+    //      packet handling
+    //  }
+    //  delete(Packet message);
     //}
 }
 
@@ -217,6 +238,7 @@ int Antenna::allocateRBs(std::vector<std::pair<simtime_t,int>>* currentQueue, Fr
         {
             allocatedBytes = currentPacketDimension;
             currentQueue->erase(currentQueue->begin());
+            sentPackets += 1;
         }
 
         //Allocating a new RB.
@@ -232,6 +254,15 @@ int Antenna::allocateRBs(std::vector<std::pair<simtime_t,int>>* currentQueue, Fr
     } while(!currentQueue->empty());
 
     return bytesToSend;
+}
+
+void Antenna::finish()
+{
+// +-----------------------------------------------------------------------------+
+//  Packet loss (%): % of packets that cannot be queued
+    if(par("stage").intValue() == 1)
+        recordScalar("PacketLoss%", (lostPackets/sentPackets)*100);
+// +-----------------------------------------------------------------------------+
 }
 
 }

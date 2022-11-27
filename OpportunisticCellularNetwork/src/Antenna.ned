@@ -6,6 +6,7 @@ simple Antenna
     parameters:
         int stage = default(0);
         int population;
+        int timeslot;
     // +-------------------------------------------------------------------------------+
     //  Scenario: queues of fixed dimension.
     	int queueDimension;
