@@ -40,10 +40,12 @@ OBJS = \
     $O/Frame.o \
     $O/RB.o \
     $O/Source.o \
-    $O/UserQueue.o
+    $O/UserQueue.o \
+    $O/CQIMessage_m.o
 
 # Message files
-MSGFILES =
+MSGFILES = \
+    CQIMessage.msg
 
 # SM files
 SMFILES =

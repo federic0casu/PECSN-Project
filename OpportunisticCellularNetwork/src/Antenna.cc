@@ -13,24 +13,27 @@ Define_Module(Antenna);
 void Antenna::initialize()
 {
     population = par("population").intValue();
+    timeslot = (simtime_t)par("timeslot");
 
     throughputSignal = registerSignal("throughputSignal");
+
+    lostPackets = sentPackets = 0;
 
     switch(par("stage").intValue()) {
         case 1:
         {
         // +-------------------------------------------------------------------------------+
         //  Scenario: queues of fixed dimension.
+            // DEBUG: begin
             EV << "Antenna::initialize() - Scenario 1: queues of fixed dimension, population: " << population << endl;
-            this->userQueueDimension = par("queueDimension").intValue();
+            // DEBUG: end
+
+            userQueueDimension = par("queueDimension").intValue();
+
             for(int i = 0; i < population; i++)
                 userQueues.push_back(new UserQueue(i, userQueueDimension));
 
-            /*
-             * ERICA: Quando implementi il meccanismo della richiesta dei CQI ricordati di
-             * inserire qui una chiamata a scheduleAt() in modo tale da far partire il
-             * meccanismo di richiesta dei CQI.
-             */
+            scheduleAt(simTime(), new cMessage("TIMER"));
 
         // +-------------------------------------------------------------------------------+
         } break;
@@ -38,14 +41,14 @@ void Antenna::initialize()
         {
         // +-------------------------------------------------------------------------------+
         //  Scenario: queues of infinite dimension.
+            // DEBUG: begin
             EV << "Antenna::initialize() - Scenario 0: queues of infinite dimension, population: " << population << endl;
+            // DEBUG: end
+
             for(int i = 0; i < population; i++)
                 userQueues.push_back(new UserQueue(i));
 
-            /*
-             * ERICA: Anche qui bisogna inserire una chiamata a scheduleAt() per far partire
-             * il meccanismo di richiesta dei CQI.
-             */
+            scheduleAt(simTime(), new cMessage("TIMER"));
 
         // +-------------------------------------------------------------------------------+
         } break;
@@ -54,14 +57,56 @@ void Antenna::initialize()
 
 void Antenna::handleMessage(cMessage *msg)
 {
-    //if(a CQI arrives) {
-    //  int id = get id from CQI message;
-    //  int CQI = get CQI from CQI message;
-    //  handleCQI(id, CQI);
+    /* +--------------------------------------------------------------------------------+
+     * | CODICE DI PROVA - AUTORE: Federico                                             |
+     * | Per poter provare i metodi handleFrame() e handleCQI avevo bisogno di simulare |
+     * | il comportamento dell'antenna. OVVIAMENTE questo codice deve essere scritto    |
+     * | nuovamente da chi ha questo compito. Quindi eliminate tutto :) !               |
+     * +--------------------------------------------------------------------------------+
+    if(msg->isSelfMessage())
+    {
+        // DEBUG: begin
+        EV << "Antenna::handleMessage() - A new timeslot has just begun!" << endl;
+        // DEBUG: end
+
+        for(int i = 0; i < population; i++)
+            send(new cMessage("CQI"), "out", i);
+
+        simtime_t delay = simTime() + timeslot;
+        scheduleAt(delay, new cMessage("TIMER"));
+
+        // DEBUG: begin
+        EV << "Antenna::handleMessage() - scheduleAt(" << delay << ", beep)" << endl;
+        // DEBUG: end
+
+        // Since the message is no more useful, it will be 'deleted' to avoid any memory leak.
+        delete(msg);
+    }
+    // If a new CQI arrives...
+    else if(msg->arrivedOn("inCellular"))
+    {
+        handleCQI(msg);
+    }
+       +--------------------------------------------------------------------------------+
+       | FINE CODICE DI PROVA                                                           |
+       +--------------------------------------------------------------------------------+
+    */
+
+    //else if(We have queues of finite dimension and a new packet has just arrived)
+    //{
+    //  if(user's queue is full)
+    //  {
+    //      lostPackets += 1;
+    //  }
+    //  else
+    //  {
+    //      packet handling
+    //  }
+    //  delete(Packet message);
     //}
 }
 
-void Antenna::handleCQI(int id, int CQI)
+void Antenna::handleCQI(cMessage* msg)
 {
 // +----------------------------------------------------------------------------------+
 // | This method is used to manage CQIs. When a timeslot begins each user sends a CQI |
@@ -69,8 +114,19 @@ void Antenna::handleCQI(int id, int CQI)
 // | CQIs is a couple whose fields are the user's id and the current CQI.             |
 // +----------------------------------------------------------------------------------+
 
+    CQIMessage *cqi = check_and_cast<CQIMessage*>(msg);
+    int id = cqi->getId();
+    int CQI = cqi->getCQI();
+
+    // DEBUG: begin
+    EV << "Antenna::handleMessage() - A new CQI has just arrived! id=" << id << ", CQI=" << CQI << endl;
+    // DEBUG: end
+
     CQIPacket *tmp = new CQIPacket(id, CQI);
     CQIs.push_back(tmp);
+
+    // Since the message is no more useful, it will be 'deleted' to avoid any memory leak.
+    delete(msg);
 
     if(CQIs.size() == population)
     {
@@ -103,7 +159,7 @@ void Antenna::handleFrame()
     // Frame to send
     Frame* frameToSend = new Frame();
 
-    for(int i = 0; i < 25; i++)
+    for(int i = 0; i < population; i++)
     {
         // Retrieving the user under service.
         currentUser = CQIs[i]->getId();
@@ -217,6 +273,7 @@ int Antenna::allocateRBs(std::vector<std::pair<simtime_t,int>>* currentQueue, Fr
         {
             allocatedBytes = currentPacketDimension;
             currentQueue->erase(currentQueue->begin());
+            sentPackets += 1;
         }
 
         //Allocating a new RB.
@@ -232,6 +289,15 @@ int Antenna::allocateRBs(std::vector<std::pair<simtime_t,int>>* currentQueue, Fr
     } while(!currentQueue->empty());
 
     return bytesToSend;
+}
+
+void Antenna::finish()
+{
+// +-----------------------------------------------------------------------------+
+//  Packet loss (%): % of packets that cannot be queued
+    if(par("stage").intValue() == 1)
+        recordScalar("PacketLoss%", (lostPackets/sentPackets)*100);
+// +-----------------------------------------------------------------------------+
 }
 
 }
