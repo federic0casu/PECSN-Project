@@ -1,8 +1,7 @@
-<<<<<<< HEAD
 package opportunisticcellularnetwork;
-=======
-package opportunisticCellularNetwork;
->>>>>>> ff6c992a6123815f6068a2bef014605660aa7996
+
+
+
 
  // A source models an entity that forwards packets either from internal or esternal cell
  
