@@ -2,6 +2,7 @@
 #define __OPPORTUNISTICCELLULARNETWORK_CELLULAR_H
 
 #include <omnetpp.h>
+#include "CQIMessage_m.h"
 
 using namespace omnetpp;
 
