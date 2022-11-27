@@ -6,6 +6,7 @@ simple Antenna
     parameters:
         int stage = default(0);
         int population;
+        int timeslot;
     // +-------------------------------------------------------------------------------+
     //  Scenario: queues of fixed dimension.
     	int queueDimension;
@@ -16,6 +17,7 @@ simple Antenna
         @statistic[throughput](source="throughputSignal"; record=vector;);
     // +-------------------------------------------------------------------------------+
     gates:
-        input in;
-        output out;
+        input  inCellular[];
+        input  inSource[];
+        output out[];
 }

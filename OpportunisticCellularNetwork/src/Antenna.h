@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <omnetpp.h>
 #include <vector>
+#include "CQIMessage_m.h"
 #include "CQIPacket.h"
 #include "Frame.h"
 #include "UserQueue.h"
@@ -22,6 +23,7 @@ class Antenna : public cSimpleModule
 {
   private:
     int population;
+    simtime_t timeslot;
     std::vector<UserQueue*> userQueues;
     std::vector<CQIPacket*> CQIs;
 // +-------------------------------------------------------------------------------+
@@ -31,6 +33,8 @@ class Antenna : public cSimpleModule
 // +-------------------------------------------------------------------------------+
 //  Statistics
     simsignal_t throughputSignal;
+    int sentPackets;
+    int lostPackets;
 // +-------------------------------------------------------------------------------+
     virtual int queuedBytesById(int);
     virtual int CQI_to_BYTES(int);
@@ -39,7 +43,8 @@ class Antenna : public cSimpleModule
   protected:
     virtual void initialize() override;
     virtual void handleMessage(cMessage *msg) override;
-    virtual void handleCQI(int, int);
+    virtual void finish() override;
+    virtual void handleCQI(cMessage *msg);
     virtual void handleFrame();
 };
 
