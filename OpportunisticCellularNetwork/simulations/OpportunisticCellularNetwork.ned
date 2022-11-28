@@ -26,8 +26,8 @@ network OpportunisticCellularNetwork
         }
     connections:
         for i=0..(population-1) {
-            cellular[i].out --> antenna.inCellular[i];
-            source[i].out --> antenna.inSource[i];
+            cellular[i].out --> antenna.inCellular++;
+            source[i].out --> antenna.inSource++;
             antenna.out++ --> cellular[i].in;
         }
 }

@@ -41,11 +41,13 @@ OBJS = \
     $O/RB.o \
     $O/Source.o \
     $O/UserQueue.o \
-    $O/CQIMessage_m.o
+    $O/CQIMessage_m.o \
+    $O/Packet_m.o
 
 # Message files
 MSGFILES = \
-    CQIMessage.msg
+    CQIMessage.msg \
+    Packet.msg
 
 # SM files
 SMFILES =
