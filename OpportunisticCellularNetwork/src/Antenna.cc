@@ -1,11 +1,12 @@
 #include "Antenna.h"
 
+#define DEBUG ;
+
 namespace opportunisticcellularnetwork {
 
 Define_Module(Antenna);
 
-/*
- * +-------------------------------------------------------------------------------+
+/* +-------------------------------------------------------------------------------+
  * | Definition of Antenna's methods.                                              |
  * +-------------------------------------------------------------------------------+
  */
@@ -24,9 +25,9 @@ void Antenna::initialize()
         {
         // +-------------------------------------------------------------------------------+
         //  Scenario: queues of fixed dimension.
-            // DEBUG: begin
+            #ifdef DEBUG
             EV << "Antenna::initialize() - Scenario 1: queues of fixed dimension, population: " << population << endl;
-            // DEBUG: end
+            #endif
 
             userQueueDimension = par("queueDimension").intValue();
 
@@ -41,9 +42,9 @@ void Antenna::initialize()
         {
         // +-------------------------------------------------------------------------------+
         //  Scenario: queues of infinite dimension.
-            // DEBUG: begin
+            #ifdef DEBUG
             EV << "Antenna::initialize() - Scenario 0: queues of infinite dimension, population: " << population << endl;
-            // DEBUG: end
+            #endif
 
             for(int i = 0; i < population; i++)
                 userQueues.push_back(new UserQueue(i));
@@ -59,46 +60,34 @@ void Antenna::initialize()
 
 void Antenna::handleMessage(cMessage *msg)
 {
-    /* +--------------------------------------------------------------------------------+
-     * | CODICE DI PROVA - AUTORE: Federico                                             |
-     * | Per poter provare i metodi handleFrame() e handleCQI avevo bisogno di simulare |
-     * | il comportamento dell'antenna. OVVIAMENTE questo codice deve essere scritto    |
-     * | nuovamente da chi ha questo compito. Quindi eliminate tutto :) !               |
-     * +--------------------------------------------------------------------------------+  */
+/* +--------------------------------------------------------------------------------+
+ * | CODICE DI PROVA - AUTORE: Federico                                             |
+ * | Per poter provare i metodi handleFrame() e handleCQI avevo bisogno di simulare |
+ * | il comportamento dell'antenna. OVVIAMENTE questo codice deve essere scritto    |
+ * | nuovamente da chi ha questo compito. Quindi eliminate tutto :) !               |
+ * +--------------------------------------------------------------------------------+
+ */
 
-    /*
+    // If a TIMESLOT expires...
     if(msg->isSelfMessage())
     {
-        // DEBUG: begin
-        EV << "Antenna::handleMessage() - A new timeslot has just begun!" << endl;
-        // DEBUG: end
-
-        for(int i = 0; i < population; i++)
-            send(new cMessage("CQI"), "out", i);
-
-        simtime_t delay = simTime() + timeslot;
-        scheduleAt(delay, new cMessage("TIMER"));
-
-        // DEBUG: begin
-        EV << "Antenna::handleMessage() - scheduleAt(" << delay << ", beep)" << endl;
-        // DEBUG: end
-
-        // Since the message is no more useful, it will be 'deleted' to avoid any memory leak.
-        delete(msg);
+        handleSelfMessage(msg);
     }
     // If a new CQI arrives...
     else if(msg->arrivedOn("inCellular"))
     {
         handleCQI(msg);
     }
+    // If a new PACKET arrives...
+    else
+    {
+        handlePacket(msg);
+    }
 
-    */
-
-    /*
-       +--------------------------------------------------------------------------------+
-       | FINE CODICE DI PROVA                                                           |
-       +--------------------------------------------------------------------------------+
-    */
+/* +--------------------------------------------------------------------------------+
+ * | FINE CODICE DI PROVA                                                           |
+ * +--------------------------------------------------------------------------------+
+ */
 
     //else if(We have queues of finite dimension and a new packet has just arrived)
     //{
@@ -114,6 +103,7 @@ void Antenna::handleMessage(cMessage *msg)
     //}
 }
 
+void Antenna::handlePacket(cMessage *msg) {
 
 // AUTHOR : DANIEL
 // +----------------------------------------------------------------------------------+
@@ -122,32 +112,54 @@ void Antenna::handleMessage(cMessage *msg)
 // | the queue associated to the gate that the packet came from.                      |
 // +----------------------------------------------------------------------------------+
 
-/*
-void Antenna::handlePacket(cMessage *msg) {
-
     Packet *packet = check_and_cast<Packet*>(msg);
 
     int size = packet->getSize();
+    int id = packet->getId();
 
+    #ifdef DEBUG
+    EV << "Antenna::handlePacket() - A new PACKET has just arrived! id=" << id <<", size=" << size << endl;
+    #endif
 
+    // Since the message is no more useful, it will be 'deleted' to avoid any memory leak.
+    delete(msg);
 }
-*/
+
+void Antenna::handleSelfMessage(cMessage *msg)
+{
+    #ifdef DEBUG
+    EV << "Antenna::handleMessage() - NEW TIMESLOT" << endl;
+    #endif
+
+    for(int i = 0; i < population; i++)
+        send(new cMessage("CQI"), "out", i);
+
+    simtime_t delay = simTime() + timeslot;
+    scheduleAt(delay, new cMessage("TIMER"));
+
+    #ifdef DEBUG
+    EV << "Antenna::handleMessage() - scheduleAt(" << delay << ", beep)" << endl;
+    #endif
+
+    // Since the message is no more useful, it will be 'deleted' to avoid any memory leak.
+    delete(msg);
+}
 
 void Antenna::handleCQI(cMessage* msg)
 {
-    // +----------------------------------------------------------------------------------+
-    // | This method is used to manage CQIs. When a timeslot begins each user sends a CQI |
-    // | packet. The Antenna stores CQIs in std::vector<CQIPacket> CQIs. Each element of  |
-    // | CQIs is a couple whose fields are the user's id and the current CQI.             |
-    // +----------------------------------------------------------------------------------+
+// +----------------------------------------------------------------------------------+
+// | This method is used to manage CQIs. When a timeslot begins each user sends a CQI |
+// | packet. The Antenna stores CQIs in std::vector<CQIPacket> CQIs. Each element of  |
+// | CQIs is a couple whose fields are the user's id and the current CQI.             |
+// +----------------------------------------------------------------------------------+
 
     CQIMessage *cqi = check_and_cast<CQIMessage*>(msg);
     int id = cqi->getId();
     int CQI = cqi->getCQI();
 
-    // DEBUG: begin
+    #ifdef DEBUG
     EV << "Antenna::handleMessage() - A new CQI has just arrived! id=" << id << ", CQI=" << CQI << endl;
-    // DEBUG: end
+    #endif
 
     CQIPacket *tmp = new CQIPacket(id, CQI);
     CQIs.push_back(tmp);
@@ -197,19 +209,19 @@ void Antenna::handleFrame()
         // The current user has an empty queue.
         if(queuedBytes == 0)
         {
-            // DEBUG: begin
+            #ifdef DEBUG
             EV << "Antenna::handleFrame() - user " << currentUser << " has an empty queue!" << endl;
-            // DEBUG: end
+            #endif
             continue;
         }
 
-        // DEBUG: begin
+        #ifdef DEBUG
         if(queuedBytes == -1)
         {
             EV << "Antenna::handleFrame() - FATAL ERROR - user " << currentUser << " not recognized!" << endl;
             continue;
         }
-        // DEBUG: end
+        #endif
 
         // Retrieving the CQI sent by the current user.
         currentCQI = CQIs[i]->getCQI();
@@ -224,9 +236,9 @@ void Antenna::handleFrame()
         // An user can be served if and only if the number of unallocated RBs is large enough.
         if(numRBs > remainingRBs)
         {
-            // DEBUG: begin
+            #ifdef DEBUG
             EV << "Antenna::handleFrame() - user " << currentUser << " cannot be served! remainingRBs=" << remainingRBs <<", currentCQI=" << currentCQI << "(" << CQI_to_BYTES(currentCQI) << " bytes), queuedBytes=" << queuedBytes << endl;
-            // DEBUG: end
+            #endif
             continue;
         }
 
@@ -306,9 +318,9 @@ int Antenna::allocateRBs(std::vector<std::pair<simtime_t,int>>* currentQueue, Fr
         //Allocating a new RB.
         frameToSend->addRB(currentUser, CQI_to_BYTES(currentCQI), allocatedBytes);
 
-        // DEBUG: begin
+        #ifdef DEBUG
         EV << "Antenna::handleFrame() - A new RB has been allocated - currentCQI=" << currentCQI << "(" << CQI_to_BYTES(currentCQI) << " bytes), allocated bytes=" << allocatedBytes << endl;
-        // DEBUG: end
+        #endif
 
         // Updating the total number of bytes sent in a timeslot.
         bytesToSend += allocatedBytes;

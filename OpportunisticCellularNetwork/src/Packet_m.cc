@@ -150,6 +150,8 @@ void doParsimUnpacking(omnetpp::cCommBuffer *, T& t)
 
 }  // namespace omnetpp
 
+namespace opportunisticcellularnetwork {
+
 Register_Class(Packet)
 
 Packet::Packet(const char *name, short kind) : ::omnetpp::cPacket(name, kind)
@@ -203,12 +205,12 @@ void Packet::setSize(int size)
     this->size = size;
 }
 
-omnetpp::simtime_t Packet::getTimestamp() const
+::omnetpp::simtime_t Packet::getTimestamp() const
 {
     return this->timestamp;
 }
 
-void Packet::setTimestamp(omnetpp::simtime_t timestamp)
+void Packet::setTimestamp(::omnetpp::simtime_t timestamp)
 {
     this->timestamp = timestamp;
 }
@@ -251,7 +253,7 @@ class PacketDescriptor : public omnetpp::cClassDescriptor
 
 Register_ClassDescriptor(PacketDescriptor)
 
-PacketDescriptor::PacketDescriptor() : omnetpp::cClassDescriptor(omnetpp::opp_typename(typeid(Packet)), "omnetpp::cPacket")
+PacketDescriptor::PacketDescriptor() : omnetpp::cClassDescriptor(omnetpp::opp_typename(typeid(opportunisticcellularnetwork::Packet)), "omnetpp::cPacket")
 {
     propertyNames = nullptr;
 }
@@ -524,6 +526,9 @@ void PacketDescriptor::setFieldStructValuePointer(omnetpp::any_ptr object, int f
     }
 }
 
+}  // namespace opportunisticcellularnetwork
+
 namespace omnetpp {
 
 }  // namespace omnetpp
+

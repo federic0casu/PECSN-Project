@@ -7,11 +7,11 @@
 
 #include "CQIMessage_m.h"
 #include "CQIPacket.h"
+#include "Packet_m.h"
 #include "Source.h"
 
 #include "Frame.h"
 #include "UserQueue.h"
-
 
 using namespace omnetpp;
 
@@ -48,6 +48,8 @@ class Antenna : public cSimpleModule
     virtual void initialize() override;
     virtual void handleMessage(cMessage *msg) override;
     virtual void finish() override;
+    virtual void handleSelfMessage(cMessage *msg);
+    virtual void handlePacket(cMessage *msg);
     virtual void handleCQI(cMessage *msg);
     virtual void handleFrame();
 };

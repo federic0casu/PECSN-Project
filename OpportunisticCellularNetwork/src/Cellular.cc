@@ -1,5 +1,7 @@
 #include "Cellular.h"
 
+#define DEBUG ;
+
 namespace opportunisticcellularnetwork {
 
 Define_Module(Cellular);
@@ -22,11 +24,12 @@ void Cellular::handleMessage(cMessage *msg)
      * | il comportamento dell'antenna. OVVIAMENTE questo codice deve essere scritto    |
      * | nuovamente da chi ha questo compito. Quindi eliminate tutto :) !               |
      * +--------------------------------------------------------------------------------+
+     */
     if(strcmp(msg->getName(), "CQI") == 0)
     {
-        // DEBUG: begin
+        #ifdef DEBUG
         EV << getName() << getId() <<"::handleMessage() - A new CQI REQUEST is just arrived!" << endl;
-        // DEBUG: end
+        #endif
 
         int CQI = uniform(1, 15);
         int id = par("id").intValue();
@@ -36,17 +39,18 @@ void Cellular::handleMessage(cMessage *msg)
 
         send(cqi, "out");
 
-        // DEBUG: begin
+        #ifdef DEBUG
         EV << getName() << getId() <<"::handleMessage() - A new CQI RESPONSE has just been sent! CQI=" << CQI << endl;
-        // DEBUG: end
+        #endif
     }
 
     // Since the message is no more useful, it will be 'deleted' to avoid any memory leak.
     delete(msg);
-      +--------------------------------------------------------------------------------+
-      | FINE CODICE DI PROVA                                                           |
-      +--------------------------------------------------------------------------------+
-   */
+    /*
+     *  +--------------------------------------------------------------------------------+
+     *  | FINE CODICE DI PROVA                                                           |
+     *  +--------------------------------------------------------------------------------+
+     */
 }
 
 };
