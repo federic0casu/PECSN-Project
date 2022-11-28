@@ -17,17 +17,17 @@ network OpportunisticCellularNetwork
         cellular[population]: Cellular {
             // Returns the index of the istance of the module in the array
             id = index;
-            @display("i=device/cellphone;is=s;p=433,196");
+            @display("i=device/cellphone;is=s;p=468,125");
         }
         source[population]: Source {
             // Returns the index of the istance of the module in the array
             id = index;
-            @display("i=device/server2;is=n;p=167,188");
+            @display("i=device/server2;is=n;p=96,142");
         }
     connections:
         for i=0..(population-1) {
-            cellular[i].out --> antenna.inCellular++;
-            source[i].out   --> antenna.inSource++;
-            antenna.out++  --> cellular[i].in;
+            cellular[i].out --> antenna.inCellular[i];
+            source[i].out --> antenna.inSource[i];
+            antenna.out++ --> cellular[i].in;
         }
 }

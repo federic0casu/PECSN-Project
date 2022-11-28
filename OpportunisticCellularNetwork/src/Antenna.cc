@@ -55,6 +55,8 @@ void Antenna::initialize()
     }
 }
 
+
+
 void Antenna::handleMessage(cMessage *msg)
 {
     /* +--------------------------------------------------------------------------------+
@@ -62,7 +64,9 @@ void Antenna::handleMessage(cMessage *msg)
      * | Per poter provare i metodi handleFrame() e handleCQI avevo bisogno di simulare |
      * | il comportamento dell'antenna. OVVIAMENTE questo codice deve essere scritto    |
      * | nuovamente da chi ha questo compito. Quindi eliminate tutto :) !               |
-     * +--------------------------------------------------------------------------------+
+     * +--------------------------------------------------------------------------------+  */
+
+    /*
     if(msg->isSelfMessage())
     {
         // DEBUG: begin
@@ -87,6 +91,10 @@ void Antenna::handleMessage(cMessage *msg)
     {
         handleCQI(msg);
     }
+
+    */
+
+    /*
        +--------------------------------------------------------------------------------+
        | FINE CODICE DI PROVA                                                           |
        +--------------------------------------------------------------------------------+
@@ -106,13 +114,32 @@ void Antenna::handleMessage(cMessage *msg)
     //}
 }
 
+
+// AUTHOR : DANIEL
+// +----------------------------------------------------------------------------------+
+// | This metod is used to handle the packets incoming from the sources               |
+// | whenever a new packet arrives, we check the gate number, and store the packet in |
+// | the queue associated to the gate that the packet came from.                      |
+// +----------------------------------------------------------------------------------+
+
+/*
+void Antenna::handlePacket(cMessage *msg) {
+
+    Packet *packet = check_and_cast<Packet*>(msg);
+
+    int size = packet->getSize();
+
+
+}
+*/
+
 void Antenna::handleCQI(cMessage* msg)
 {
-// +----------------------------------------------------------------------------------+
-// | This method is used to manage CQIs. When a timeslot begins each user sends a CQI |
-// | packet. The Antenna stores CQIs in std::vector<CQIPacket> CQIs. Each element of  |
-// | CQIs is a couple whose fields are the user's id and the current CQI.             |
-// +----------------------------------------------------------------------------------+
+    // +----------------------------------------------------------------------------------+
+    // | This method is used to manage CQIs. When a timeslot begins each user sends a CQI |
+    // | packet. The Antenna stores CQIs in std::vector<CQIPacket> CQIs. Each element of  |
+    // | CQIs is a couple whose fields are the user's id and the current CQI.             |
+    // +----------------------------------------------------------------------------------+
 
     CQIMessage *cqi = check_and_cast<CQIMessage*>(msg);
     int id = cqi->getId();
