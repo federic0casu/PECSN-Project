@@ -26,6 +26,7 @@ class Packet;
  * packet Packet
  * {
  *     int size;
+ *     simtime_t timestamp;
  * }
  * </pre>
  */
@@ -33,6 +34,7 @@ class Packet : public ::omnetpp::cPacket
 {
   protected:
     int size = 0;
+    omnetpp::simtime_t timestamp = SIMTIME_ZERO;
 
   private:
     void copy(const Packet& other);
@@ -51,6 +53,9 @@ class Packet : public ::omnetpp::cPacket
 
     virtual int getSize() const;
     virtual void setSize(int size);
+
+    virtual omnetpp::simtime_t getTimestamp() const;
+    virtual void setTimestamp(omnetpp::simtime_t timestamp);
 };
 
 inline void doParsimPacking(omnetpp::cCommBuffer *b, const Packet& obj) {obj.parsimPack(b);}
@@ -64,4 +69,3 @@ template<> inline Packet *fromAnyPtr(any_ptr ptr) { return check_and_cast<Packet
 }  // namespace omnetpp
 
 #endif // ifndef __PACKET_M_H
-

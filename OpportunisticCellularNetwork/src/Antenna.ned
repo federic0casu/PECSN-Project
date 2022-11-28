@@ -17,7 +17,7 @@ simple Antenna
         @statistic[throughput](source="throughputSignal"; record=vector;);
     // +-------------------------------------------------------------------------------+
     gates:
-        input  inCellular[];
-        input  inSource[];
-        output out[];
+        input  inCellular[population];
+        input  inSource[population];
+        output out[population];
 }

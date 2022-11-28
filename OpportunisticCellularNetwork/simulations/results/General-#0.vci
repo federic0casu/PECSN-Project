@@ -1,5 +1,5 @@
-file 907 1669569537                                             
-version 3
+file 865 1669590218                                             
+version 2
 run General-0-20221127-18:18:08-6568
 attr configname General
 attr datetime 20221127-18:18:08
@@ -29,8 +29,4 @@ vector 0 OpportunisticCellularNetwork.antenna throughput:vector ETV
 attr "" ""
 attr recordingmode vector
 attr source throughputSignal
-0	795 9 5 5 0 0 1 0 0 0 0
-0	804 10 10 10 1 1 1 0 0 0 0
-0	814 10 15 15 2 2 1 0 0 0 0
-0	824 81 20 55 3 10 8 0 0 0 0
-
+0	765 100 5 55 0 10 11 0 0 0 0
