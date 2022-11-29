@@ -104,6 +104,7 @@ void Antenna::handlePacket(cMessage *msg) {
     // if we are in stage 1 (finite queues), we record a new lost packet and finish
     if (par("stage").intValue() && size + queuedBytes > queue->getQueueDimension() ) {
         EV << "QUEUE IS FULL : PACKET LOSS, SIZE = " << size << endl;
+        lostPackets++;
     }
     else {
 
