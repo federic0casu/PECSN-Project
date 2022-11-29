@@ -15,7 +15,7 @@ private:
 // +-------------------------------------------------------------------------------+
 //  Scenario: queues of fixed dimension.
     int queueDimension;
-    int numberOfPacketsQueued;
+    int freeSlots;
 // +-------------------------------------------------------------------------------+
     std::vector<std::pair<simtime_t,int>> queue;
 public:
@@ -23,9 +23,11 @@ public:
     UserQueue(int, int);
     virtual int getId();
     virtual int getQueueDimension();
+    virtual int getFreeSlots();
     virtual void addPacket(int);
     virtual int queuedBytes();
     virtual void showQueue();
+    virtual void resetQueue();
     virtual std::vector<std::pair<simtime_t,int>>* getQueue();
     virtual ~UserQueue();
 };

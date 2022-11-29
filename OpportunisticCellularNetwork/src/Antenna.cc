@@ -13,7 +13,16 @@ Define_Module(Antenna);
 
 void Antenna::initialize()
 {
+/*  AUTHOR : FEDERICO
+ * +-------------------------------------------------------------------------------+
+ * | This metod handles the Antenna's setup at the beginning of the simulation.    |
+ * +-------------------------------------------------------------------------------+
+ */
+
+    // Retrieving the number of cellulars within the network (omnetpp.ini)
     population = par("population").intValue();
+
+    // Retrieving timeslot duration (omnetpp.ini)
     timeslot = (simtime_t)par("timeslot");
 
     throughputSignal = registerSignal("throughputSignal");
@@ -54,17 +63,21 @@ void Antenna::initialize()
         // +-------------------------------------------------------------------------------+
         } break;
     }
+
+    #ifdef DEBUG
+    EV << "Antenna::initialize() - END" << endl;
+    #endif
 }
 
 
 
 void Antenna::handleMessage(cMessage *msg)
 {
-/* +--------------------------------------------------------------------------------+
- * | CODICE DI PROVA - AUTORE: Federico                                             |
- * | Per poter provare i metodi handleFrame() e handleCQI avevo bisogno di simulare |
- * | il comportamento dell'antenna. OVVIAMENTE questo codice deve essere scritto    |
- * | nuovamente da chi ha questo compito. Quindi eliminate tutto :) !               |
+/*  AUTHOR : FEDERICO
+ * +--------------------------------------------------------------------------------+
+ * | Per poter provare i metodi handleFrame() e handleCQI() avevo bisogno di simu-  |
+ * | lare il comportamento dell'antenna. OVVIAMENTE questo codice deve essere scrit-|
+ * | to nuovamente da chi ha questo compito. Quindi eliminate tutto :) !            |
  * +--------------------------------------------------------------------------------+
  */
 
@@ -87,32 +100,30 @@ void Antenna::handleMessage(cMessage *msg)
 
 void Antenna::handlePacket(cMessage *msg) {
 
-// AUTHOR : DANIEL
-// +----------------------------------------------------------------------------------+
-// | This metod is used to handle the packets incoming from the sources               |
-// | whenever a new packet arrives, we check the gate number, and store the packet in |
-// | the queue associated to the gate that the packet came from.                      |
-// +----------------------------------------------------------------------------------+
+/*  AUTHOR : DANIEL
+ * +----------------------------------------------------------------------------------+
+ * | This metod is used to handle the packets incoming from the sources. Whenever a   |
+ * | new packet arrives we check the gate number and the packet is stored in the queue|
+ * | associated with the gate the packet came from.                                   |
+ * +----------------------------------------------------------------------------------+
+ */
     Packet *packet = check_and_cast<Packet*>(msg);
-
 
     int size = packet->getSize();
     int gateIndex = packet->getIndex();
-    UserQueue * queue = getQueueById(gateIndex);
-    int queuedBytes = queue->queuedBytes();
+    UserQueue *queue = getQueueById(gateIndex);
 
-    // if we are in stage 1 (finite queues), we record a new lost packet and finish
-    if (par("stage").intValue() && size + queuedBytes > queue->getQueueDimension() ) {
-        EV << "QUEUE IS FULL : PACKET LOSS, SIZE = " << size << endl;
+    // If we are in stage 1 (finite queues), we record a new lost packet and finish
+    if (par("stage").intValue() && queue->getFreeSlots() == 0)
+    {
+        EV << "Antenna::handlePacket() - QUEUE (id=" << gateIndex << ") IS FULL : PACKET LOSS, SIZE=" << size << endl;
         lostPackets++;
     }
-    else {
-
+    else
+    {
         #ifdef DEBUG
-        EV << "Antenna::handlePacket() - A new PACKET has just arrived! SIZE = " << size << endl;
+        EV << "Antenna::handlePacket() - New packet incoming from source (id="<< gateIndex << "), SIZE=" << size << endl;
         #endif
-
-        EV << "Antenna::handlePacket() - New packet incoming from source n : "<< gateIndex << endl;
 
         // push packet into user queue
         queue->addPacket(size);
@@ -128,6 +139,12 @@ void Antenna::handlePacket(cMessage *msg) {
 
 void Antenna::handleSelfMessage(cMessage *msg)
 {
+/*  AUTHOR : FEDERICO
+ * +--------------------------------------------------------------------------------+
+ * | This metod is used to handle the CQI request process. For each user registered |
+ * | to the network, the Antenna requests a CQI at the beginning of each timeslot.  |
+ * +--------------------------------------------------------------------------------+
+ */
     #ifdef DEBUG
     EV << "Antenna::handleMessage() - NEW TIMESLOT" << endl;
     #endif
@@ -148,18 +165,20 @@ void Antenna::handleSelfMessage(cMessage *msg)
 
 void Antenna::handleCQI(cMessage* msg)
 {
-// +----------------------------------------------------------------------------------+
-// | This method is used to manage CQIs. When a timeslot begins each user sends a CQI |
-// | packet. The Antenna stores CQIs in std::vector<CQIPacket> CQIs. Each element of  |
-// | CQIs is a couple whose fields are the user's id and the current CQI.             |
-// +----------------------------------------------------------------------------------+
+/*  AUTHOR : FEDERICO
+ * +----------------------------------------------------------------------------------+
+ * | This method is used to manage CQIs. When a timeslot begins each user sends a CQI |
+ * | packet. The Antenna stores CQIs in std::vector<CQIPacket> CQIs. Each element of  |
+ * | CQIs is a couple whose fields are the user's id and the current CQI.             |
+ * +----------------------------------------------------------------------------------+
+ */
 
     CQIMessage *cqi = check_and_cast<CQIMessage*>(msg);
     int id = cqi->getId();
     int CQI = cqi->getCQI();
 
     #ifdef DEBUG
-    EV << "Antenna::handleMessage() - A new CQI has just arrived! id=" << id << ", CQI=" << CQI << endl;
+    EV << "Antenna::handleMessage() - A new CQI RESPONSE has just arrived! id=" << id << ", CQI=" << CQI << endl;
     #endif
 
     CQIPacket *tmp = new CQIPacket(id, CQI);
@@ -179,12 +198,14 @@ void Antenna::handleCQI(cMessage* msg)
 
 void Antenna::handleFrame()
 {
-// +-----------------------------------------------------------------------------------+
-// | This method is used to compose a new Frame. The Antenna composes a frame made up  |
-// | of 25 RBs. The antenna serves its users using an opportunistic policy: backlogged |
-// | users are served by decreasing CQI. When a user is considered for service, its    |
-// | queue is emptied, if the number of unallocated RBs is large enough.               |
-// +-----------------------------------------------------------------------------------+
+/*  AUTHOR : FEDERICO
+ * +-----------------------------------------------------------------------------------+
+ * | This method is used to compose a new Frame. The Antenna composes a frame made up  |
+ * | of 25 RBs. The antenna serves its users using an opportunistic policy: backlogged |
+ * | users are served by decreasing CQI. When a user is considered for service, its    |
+ * | queue is emptied, if the number of unallocated RBs is large enough.               |
+ * +-----------------------------------------------------------------------------------+
+ */
 
     // Opportunistic policy: users are served by decreasing CQI -> CQIs has to be sorted
     // in a decreasing order.
@@ -246,6 +267,8 @@ void Antenna::handleFrame()
         remainingRBs -= numRBs;
 
         bytesToSend += allocateRBs(getQueueById(currentUser)->getQueue(), frameToSend, currentCQI, currentUser);
+
+        getQueueById(currentUser)->resetQueue();
     }
 
     // Recording throughtput's statistics
@@ -254,6 +277,7 @@ void Antenna::handleFrame()
 
 int Antenna::queuedBytesById(int id)
 {
+//  AUTHOR : FEDERICO
     for(UserQueue *currentUser : userQueues)
     {
         if(currentUser->getId() == id)
@@ -264,6 +288,7 @@ int Antenna::queuedBytesById(int id)
 
 UserQueue* Antenna::getQueueById(int id)
 {
+//  AUTHOR : FEDERICO
     for(UserQueue *currentUser : userQueues)
     {
         if(currentUser->getId() == id)
@@ -274,6 +299,7 @@ UserQueue* Antenna::getQueueById(int id)
 
 int Antenna::CQI_to_BYTES(int CQI)
 {
+//  AUTHOR : FEDERICO
     switch(CQI)
     {
         case 1 : return 3;
@@ -297,6 +323,7 @@ int Antenna::CQI_to_BYTES(int CQI)
 
 int Antenna::allocateRBs(std::vector<std::pair<simtime_t,int>>* currentQueue, Frame* frameToSend, int currentCQI, int currentUser)
 {
+//  AUTHOR : FEDERICO
     int bytesToSend = 0;
 
     do {

@@ -18,13 +18,14 @@ void Cellular::initialize()
 
 void Cellular::handleMessage(cMessage *msg)
 {
-    /* +--------------------------------------------------------------------------------+
-     * | CODICE DI PROVA - AUTORE: Federico                                             |
-     * | Per poter provare i metodi handleFrame() e handleCQI avevo bisogno di simulare |
-     * | il comportamento dell'antenna. OVVIAMENTE questo codice deve essere scritto    |
-     * | nuovamente da chi ha questo compito. Quindi eliminate tutto :) !               |
-     * +--------------------------------------------------------------------------------+
-     */
+/* AUTHOR : FEDERICO
+ * +--------------------------------------------------------------------------------+
+ * | CODICE DI PROVA -                                                              |
+ * | Per poter provare i metodi handleFrame() e handleCQI avevo bisogno di simulare |
+ * | il comportamento dell'antenna. OVVIAMENTE questo codice deve essere scritto    |
+ * | nuovamente da chi ha questo compito. Quindi eliminate tutto :) !               |
+ * +--------------------------------------------------------------------------------+
+ */
     if(strcmp(msg->getName(), "CQI") == 0)
     {
         #ifdef DEBUG
@@ -46,11 +47,11 @@ void Cellular::handleMessage(cMessage *msg)
 
     // Since the message is no more useful, it will be 'deleted' to avoid any memory leak.
     delete(msg);
-    /*
-     *  +--------------------------------------------------------------------------------+
-     *  | FINE CODICE DI PROVA                                                           |
-     *  +--------------------------------------------------------------------------------+
-     */
+/*
+ *  +--------------------------------------------------------------------------------+
+ *  | FINE CODICE DI PROVA                                                           |
+ *  +--------------------------------------------------------------------------------+
+ */
 }
 
 };

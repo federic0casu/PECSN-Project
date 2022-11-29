@@ -15,17 +15,18 @@ Define_Module(Source);
 
 simtime_t Source::getDelay(bool isUniform)
 {
-
+//  AUTHOR : DANIEL
     if (isUniform)
-        return uniform(0,par("maxDelay"));
+        return uniform(0,par("maxDelay"), 0);
     else
-        return exponential((simtime_t)par("exponentialMean"));
+        return exponential((simtime_t)par("exponentialMean"), 0);
 }
 
 
 // When a source gets initialized it starts by setting a timer
 void Source::initialize()
 {
+//  AUTHOR : DANIEL
     simtime_t delay = getDelay(par("isDelayUniform"));
     scheduleAt(simTime() + delay, timerMessage);
 }
@@ -33,11 +34,13 @@ void Source::initialize()
 
 void Source::handleMessage(cMessage *msg)
 {
+//  AUTHOR : DANIEL
+
     // When timer message arrives, a packet gets forwarded out
     Packet *packet = new Packet("packet");
 
     // generating packet size and timestamp
-    int size = intuniform(0,par("maxPacketSize"));
+    int size = intuniform(0,par("maxPacketSize"), 1);
 
     packet->setSize(size);
     packet->setTimestamp(simTime());
