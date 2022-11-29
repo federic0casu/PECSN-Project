@@ -83,24 +83,6 @@ void Antenna::handleMessage(cMessage *msg)
     {
         handlePacket(msg);
     }
-
-/* +--------------------------------------------------------------------------------+
- * | FINE CODICE DI PROVA                                                           |
- * +--------------------------------------------------------------------------------+
- */
-
-    //else if(We have queues of finite dimension and a new packet has just arrived)
-    //{
-    //  if(user's queue is full)
-    //  {
-    //      lostPackets += 1;
-    //  }
-    //  else
-    //  {
-    //      packet handling
-    //  }
-    //  delete(Packet message);
-    //}
 }
 
 void Antenna::handlePacket(cMessage *msg) {
@@ -111,26 +93,33 @@ void Antenna::handlePacket(cMessage *msg) {
 // | whenever a new packet arrives, we check the gate number, and store the packet in |
 // | the queue associated to the gate that the packet came from.                      |
 // +----------------------------------------------------------------------------------+
-
     Packet *packet = check_and_cast<Packet*>(msg);
 
-    // get packet infos
+
     int size = packet->getSize();
     int gateIndex = packet->getIndex();
-
-    #ifdef DEBUG
-    EV << "Antenna::handlePacket() - A new PACKET has just arrived! SIZE = " << size << endl;
-    #endif
-
-    EV << "Antenna::handlePacket() - New packet incoming from source n : "<< gateIndex << endl;
-
-    // push packet into user queue
     UserQueue * queue = getQueueById(gateIndex);
-    queue->addPacket(size);
+    int queuedBytes = queue->queuedBytes();
 
-    #ifdef DEBUG
-    queue->showQueue();
-    #endif
+    // if we are in stage 1 (finite queues), we record a new lost packet and finish
+    if (par("stage").intValue() && size + queuedBytes > queue->getQueueDimension() ) {
+        EV << "QUEUE IS FULL : PACKET LOSS, SIZE = " << size << endl;
+    }
+    else {
+
+        #ifdef DEBUG
+        EV << "Antenna::handlePacket() - A new PACKET has just arrived! SIZE = " << size << endl;
+        #endif
+
+        EV << "Antenna::handlePacket() - New packet incoming from source n : "<< gateIndex << endl;
+
+        // push packet into user queue
+        queue->addPacket(size);
+
+        #ifdef DEBUG
+        queue->showQueue();
+        #endif
+    }
 
     // Since the message is no more useful, it will be 'deleted' to avoid any memory leak.
     delete(msg);
