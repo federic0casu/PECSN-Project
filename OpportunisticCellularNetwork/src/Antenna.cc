@@ -114,11 +114,22 @@ void Antenna::handlePacket(cMessage *msg) {
 
     Packet *packet = check_and_cast<Packet*>(msg);
 
+    // get packet infos
     int size = packet->getSize();
-    int id = packet->getId();
+    int gateIndex = packet->getIndex();
 
     #ifdef DEBUG
-    EV << "Antenna::handlePacket() - A new PACKET has just arrived! id=" << id <<", size=" << size << endl;
+    EV << "Antenna::handlePacket() - A new PACKET has just arrived! SIZE = " << size << endl;
+    #endif
+
+    EV << "Antenna::handlePacket() - New packet incoming from source n : "<< gateIndex << endl;
+
+    // push packet into user queue
+    UserQueue * queue = getQueueById(gateIndex);
+    queue->addPacket(size);
+
+    #ifdef DEBUG
+    queue->showQueue();
     #endif
 
     // Since the message is no more useful, it will be 'deleted' to avoid any memory leak.

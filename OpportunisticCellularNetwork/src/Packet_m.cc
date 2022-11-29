@@ -178,6 +178,7 @@ Packet& Packet::operator=(const Packet& other)
 void Packet::copy(const Packet& other)
 {
     this->size = other.size;
+    this->index = other.index;
     this->timestamp = other.timestamp;
 }
 
@@ -185,6 +186,7 @@ void Packet::parsimPack(omnetpp::cCommBuffer *b) const
 {
     ::omnetpp::cPacket::parsimPack(b);
     doParsimPacking(b,this->size);
+    doParsimPacking(b,this->index);
     doParsimPacking(b,this->timestamp);
 }
 
@@ -192,6 +194,7 @@ void Packet::parsimUnpack(omnetpp::cCommBuffer *b)
 {
     ::omnetpp::cPacket::parsimUnpack(b);
     doParsimUnpacking(b,this->size);
+    doParsimUnpacking(b,this->index);
     doParsimUnpacking(b,this->timestamp);
 }
 
@@ -203,6 +206,16 @@ int Packet::getSize() const
 void Packet::setSize(int size)
 {
     this->size = size;
+}
+
+int Packet::getIndex() const
+{
+    return this->index;
+}
+
+void Packet::setIndex(int index)
+{
+    this->index = index;
 }
 
 ::omnetpp::simtime_t Packet::getTimestamp() const
@@ -221,6 +234,7 @@ class PacketDescriptor : public omnetpp::cClassDescriptor
     mutable const char **propertyNames;
     enum FieldConstants {
         FIELD_size,
+        FIELD_index,
         FIELD_timestamp,
     };
   public:
@@ -288,7 +302,7 @@ const char *PacketDescriptor::getProperty(const char *propertyName) const
 int PacketDescriptor::getFieldCount() const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
-    return base ? 2+base->getFieldCount() : 2;
+    return base ? 3+base->getFieldCount() : 3;
 }
 
 unsigned int PacketDescriptor::getFieldTypeFlags(int field) const
@@ -301,9 +315,10 @@ unsigned int PacketDescriptor::getFieldTypeFlags(int field) const
     }
     static unsigned int fieldTypeFlags[] = {
         FD_ISEDITABLE,    // FIELD_size
+        FD_ISEDITABLE,    // FIELD_index
         FD_ISEDITABLE,    // FIELD_timestamp
     };
-    return (field >= 0 && field < 2) ? fieldTypeFlags[field] : 0;
+    return (field >= 0 && field < 3) ? fieldTypeFlags[field] : 0;
 }
 
 const char *PacketDescriptor::getFieldName(int field) const
@@ -316,9 +331,10 @@ const char *PacketDescriptor::getFieldName(int field) const
     }
     static const char *fieldNames[] = {
         "size",
+        "index",
         "timestamp",
     };
-    return (field >= 0 && field < 2) ? fieldNames[field] : nullptr;
+    return (field >= 0 && field < 3) ? fieldNames[field] : nullptr;
 }
 
 int PacketDescriptor::findField(const char *fieldName) const
@@ -326,7 +342,8 @@ int PacketDescriptor::findField(const char *fieldName) const
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     int baseIndex = base ? base->getFieldCount() : 0;
     if (strcmp(fieldName, "size") == 0) return baseIndex + 0;
-    if (strcmp(fieldName, "timestamp") == 0) return baseIndex + 1;
+    if (strcmp(fieldName, "index") == 0) return baseIndex + 1;
+    if (strcmp(fieldName, "timestamp") == 0) return baseIndex + 2;
     return base ? base->findField(fieldName) : -1;
 }
 
@@ -340,9 +357,10 @@ const char *PacketDescriptor::getFieldTypeString(int field) const
     }
     static const char *fieldTypeStrings[] = {
         "int",    // FIELD_size
+        "int",    // FIELD_index
         "omnetpp::simtime_t",    // FIELD_timestamp
     };
-    return (field >= 0 && field < 2) ? fieldTypeStrings[field] : nullptr;
+    return (field >= 0 && field < 3) ? fieldTypeStrings[field] : nullptr;
 }
 
 const char **PacketDescriptor::getFieldPropertyNames(int field) const
@@ -426,6 +444,7 @@ std::string PacketDescriptor::getFieldValueAsString(omnetpp::any_ptr object, int
     Packet *pp = omnetpp::fromAnyPtr<Packet>(object); (void)pp;
     switch (field) {
         case FIELD_size: return long2string(pp->getSize());
+        case FIELD_index: return long2string(pp->getIndex());
         case FIELD_timestamp: return simtime2string(pp->getTimestamp());
         default: return "";
     }
@@ -444,6 +463,7 @@ void PacketDescriptor::setFieldValueAsString(omnetpp::any_ptr object, int field,
     Packet *pp = omnetpp::fromAnyPtr<Packet>(object); (void)pp;
     switch (field) {
         case FIELD_size: pp->setSize(string2long(value)); break;
+        case FIELD_index: pp->setIndex(string2long(value)); break;
         case FIELD_timestamp: pp->setTimestamp(string2simtime(value)); break;
         default: throw omnetpp::cRuntimeError("Cannot set field %d of class 'Packet'", field);
     }
@@ -460,6 +480,7 @@ omnetpp::cValue PacketDescriptor::getFieldValue(omnetpp::any_ptr object, int fie
     Packet *pp = omnetpp::fromAnyPtr<Packet>(object); (void)pp;
     switch (field) {
         case FIELD_size: return pp->getSize();
+        case FIELD_index: return pp->getIndex();
         case FIELD_timestamp: return pp->getTimestamp().dbl();
         default: throw omnetpp::cRuntimeError("Cannot return field %d of class 'Packet' as cValue -- field index out of range?", field);
     }
@@ -478,6 +499,7 @@ void PacketDescriptor::setFieldValue(omnetpp::any_ptr object, int field, int i, 
     Packet *pp = omnetpp::fromAnyPtr<Packet>(object); (void)pp;
     switch (field) {
         case FIELD_size: pp->setSize(omnetpp::checked_int_cast<int>(value.intValue())); break;
+        case FIELD_index: pp->setIndex(omnetpp::checked_int_cast<int>(value.intValue())); break;
         case FIELD_timestamp: pp->setTimestamp(value.doubleValue()); break;
         default: throw omnetpp::cRuntimeError("Cannot set field %d of class 'Packet'", field);
     }

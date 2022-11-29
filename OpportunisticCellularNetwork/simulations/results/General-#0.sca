@@ -1,8 +1,8 @@
 version 3
-run General-0-20221128-15:11:19-1800
+run General-0-20221129-12:25:50-14563
 attr configname General
-attr datetime 20221128-15:11:19
-attr datetimef 20221128-151119
+attr datetime 20221129-12:25:50
+attr datetimef 20221129-122550
 attr experiment General
 attr inifile omnetpp.ini
 attr iterationvars ""
@@ -10,7 +10,7 @@ attr iterationvarsd ""
 attr iterationvarsf ""
 attr measurement ""
 attr network OpportunisticCellularNetwork
-attr processid 1800
+attr processid 14563
 attr repetition 0
 attr replication #0
 attr resultdir results
@@ -28,7 +28,7 @@ par OpportunisticCellularNetwork.antenna typename "\"opportunisticcellularnetwor
 par OpportunisticCellularNetwork.antenna stage 0
 par OpportunisticCellularNetwork.antenna population 2
 par OpportunisticCellularNetwork.antenna timeslot 1
-par OpportunisticCellularNetwork.antenna queueDimension 0
+par OpportunisticCellularNetwork.antenna queueDimension 2
 par OpportunisticCellularNetwork.cellular[0] typename "\"opportunisticcellularnetwork.Cellular\""
 par OpportunisticCellularNetwork.cellular[0] id 0
 par OpportunisticCellularNetwork.cellular[1] typename "\"opportunisticcellularnetwork.Cellular\""
