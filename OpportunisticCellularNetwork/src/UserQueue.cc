@@ -25,11 +25,14 @@ UserQueue::~UserQueue()
 }
 
 int UserQueue::getId() { return id; }
+int UserQueue::getQueueDimension() {return queueDimension;}
 
 void UserQueue::addPacket(int bytes)
 {
     std::pair<simtime_t, int> packet(simTime(), bytes);
     queue.push_back(packet);
+
+    numberOfPacketsQueued++;
 }
 
 int UserQueue::queuedBytes()
@@ -57,6 +60,7 @@ void UserQueue::showQueue() {
     EV << "] Queue end" << endl;
 
 }
+
 
 
 } /* namespace opportunisticcellularnetwork */

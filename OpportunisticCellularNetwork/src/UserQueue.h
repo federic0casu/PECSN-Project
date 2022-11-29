@@ -22,6 +22,7 @@ public:
     UserQueue(int);
     UserQueue(int, int);
     virtual int getId();
+    virtual int getQueueDimension();
     virtual void addPacket(int);
     virtual int queuedBytes();
     virtual void showQueue();
