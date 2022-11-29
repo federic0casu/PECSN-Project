@@ -27,7 +27,6 @@ simtime_t Source::getDelay(bool isUniform)
 void Source::initialize()
 {
     simtime_t delay = getDelay(par("isDelayUniform"));
-
     scheduleAt(simTime() + delay, timerMessage);
 }
 
@@ -39,8 +38,10 @@ void Source::handleMessage(cMessage *msg)
 
     // generating packet size and timestamp
     int size = intuniform(0,par("maxPacketSize"));
+
     packet->setSize(size);
     packet->setTimestamp(simTime());
+    packet->setIndex(par("id"));
 
     #ifdef DEBUG
     EV << getName() << getId() << "::handleMessage() - Packet with size=" << packet->getSize() << " sent at " << packet->getTimestamp() << endl;
@@ -52,6 +53,7 @@ void Source::handleMessage(cMessage *msg)
     // re-scheduling timer
     simtime_t delay = getDelay(par("isDelayUniform"));
     scheduleAt(simTime() + delay, msg);
+
 }
 
 }

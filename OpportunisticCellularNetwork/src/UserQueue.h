@@ -24,6 +24,7 @@ public:
     virtual int getId();
     virtual void addPacket(int);
     virtual int queuedBytes();
+    virtual void showQueue();
     virtual std::vector<std::pair<simtime_t,int>>* getQueue();
     virtual ~UserQueue();
 };

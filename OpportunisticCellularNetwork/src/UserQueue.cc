@@ -45,4 +45,19 @@ std::vector<std::pair<simtime_t,int>>* UserQueue::getQueue()
     return &queue;
 }
 
+
+void UserQueue::showQueue() {
+
+    EV << "Queue user" << getId() << "[";
+
+    for(int i = 0; i < queue.size(); i++) {
+        EV <<", "<<  queue[i].second ;
+    }
+
+    EV << "] Queue end" << endl;
+
+}
+
+
 } /* namespace opportunisticcellularnetwork */
+

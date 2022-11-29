@@ -32,6 +32,7 @@ namespace opportunisticcellularnetwork {
  * packet Packet
  * {
  *     int size;
+ *     int index;
  *     simtime_t timestamp;
  * }
  * </pre>
@@ -40,6 +41,7 @@ class Packet : public ::omnetpp::cPacket
 {
   protected:
     int size = 0;
+    int index = 0;
     ::omnetpp::simtime_t timestamp = SIMTIME_ZERO;
 
   private:
@@ -59,6 +61,9 @@ class Packet : public ::omnetpp::cPacket
 
     virtual int getSize() const;
     virtual void setSize(int size);
+
+    virtual int getIndex() const;
+    virtual void setIndex(int index);
 
     virtual ::omnetpp::simtime_t getTimestamp() const;
     virtual void setTimestamp(::omnetpp::simtime_t timestamp);
