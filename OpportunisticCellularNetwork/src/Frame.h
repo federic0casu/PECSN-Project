@@ -12,6 +12,9 @@ private:
 public:
     Frame();
     void addRB(int, int, int);
+    int getIdRB(int);   //E
+    int getDimRB(int);  //E
+    int getBytesRB(int);//E
     virtual ~Frame();
 };
 

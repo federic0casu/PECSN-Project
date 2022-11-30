@@ -10,6 +10,9 @@ private:
     int allocatedBytes;
 public:
     RB(int, int, int);
+    int getId();
+    int getDim();
+    int getBytes();
     virtual ~RB();
 };
 
