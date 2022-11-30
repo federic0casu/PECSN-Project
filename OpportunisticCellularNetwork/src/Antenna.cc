@@ -230,7 +230,7 @@ void Antenna::handleFrame()
         if(queuedBytes == 0)
         {
             #ifdef DEBUG
-            EV << "Antenna::handleFrame() - user" << currentUser << " has an empty queue!" << endl;
+            EV << "Antenna::handleFrame() - user" << currentUser << " has an empty queue! (CQI=" << CQIs[i]->getCQI() << ")" << endl;
             #endif
             continue;
         }
