@@ -75,7 +75,7 @@ namespace omnetpp {
 
 template<> inline opportunisticcellularnetwork::CQIMessage *fromAnyPtr(any_ptr ptr) { return check_and_cast<opportunisticcellularnetwork::CQIMessage*>(ptr.get<cObject>()); }
 
-}  // namespace omnetpp
+};  // namespace omnetpp
 
 #endif // ifndef __OPPORTUNISTICCELLULARNETWORK_CQIMESSAGE_M_H
 

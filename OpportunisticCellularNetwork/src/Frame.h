@@ -15,6 +15,6 @@ public:
     virtual ~Frame();
 };
 
-} /* namespace opportunisticcellularnetwork */
+}; /* namespace opportunisticcellularnetwork */
 
 #endif /* __OPPORTUNISTICCELLULARNETWORK_FRAME_H_ */

@@ -54,6 +54,6 @@ class Antenna : public cSimpleModule
     virtual void handleFrame();
 };
 
-}
+};
 
 #endif

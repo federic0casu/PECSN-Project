@@ -14,6 +14,6 @@ public:
     virtual int getCQI();
 };
 
-}
+};
 
 #endif /* __OPPORTUNISTICCELLULARNETWORK_CQIPACKET_H_ */

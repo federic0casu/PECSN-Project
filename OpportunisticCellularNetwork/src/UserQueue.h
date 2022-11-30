@@ -28,6 +28,6 @@ public:
     virtual ~UserQueue();
 };
 
-}
+};
 
 #endif /* __OPPORTUNISTICCELLULARNETWORK_USERQUEUE_H_ */

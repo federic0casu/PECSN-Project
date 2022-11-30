@@ -1,8 +1,8 @@
 version 3
-run General-0-20221128-15:11:19-1800
+run General-0-20221129-13:01:02-62014
 attr configname General
-attr datetime 20221128-15:11:19
-attr datetimef 20221128-151119
+attr datetime 20221129-13:01:02
+attr datetimef 20221129-130102
 attr experiment General
 attr inifile omnetpp.ini
 attr iterationvars ""
@@ -10,7 +10,7 @@ attr iterationvarsd ""
 attr iterationvarsf ""
 attr measurement ""
 attr network OpportunisticCellularNetwork
-attr processid 1800
+attr processid 62014
 attr repetition 0
 attr replication #0
 attr resultdir results
@@ -28,11 +28,17 @@ par OpportunisticCellularNetwork.antenna typename "\"opportunisticcellularnetwor
 par OpportunisticCellularNetwork.antenna stage 0
 par OpportunisticCellularNetwork.antenna population 2
 par OpportunisticCellularNetwork.antenna timeslot 1
-par OpportunisticCellularNetwork.antenna queueDimension 0
+par OpportunisticCellularNetwork.antenna queueDimension 3
 par OpportunisticCellularNetwork.cellular[0] typename "\"opportunisticcellularnetwork.Cellular\""
 par OpportunisticCellularNetwork.cellular[0] id 0
 par OpportunisticCellularNetwork.cellular[1] typename "\"opportunisticcellularnetwork.Cellular\""
 par OpportunisticCellularNetwork.cellular[1] id 1
+par OpportunisticCellularNetwork.cellular[2] typename "\"opportunisticcellularnetwork.Cellular\""
+par OpportunisticCellularNetwork.cellular[2] id 2
+par OpportunisticCellularNetwork.cellular[3] typename "\"opportunisticcellularnetwork.Cellular\""
+par OpportunisticCellularNetwork.cellular[3] id 3
+par OpportunisticCellularNetwork.cellular[4] typename "\"opportunisticcellularnetwork.Cellular\""
+par OpportunisticCellularNetwork.cellular[4] id 4
 par OpportunisticCellularNetwork.source[0] typename "\"opportunisticcellularnetwork.Source\""
 par OpportunisticCellularNetwork.source[0] id 0
 par OpportunisticCellularNetwork.source[0] isDelayUniform true
@@ -47,6 +53,27 @@ par OpportunisticCellularNetwork.source[1] maxPacketSize 75
 par OpportunisticCellularNetwork.source[1] maxDelay 1ms
 attr unit ms
 par OpportunisticCellularNetwork.source[1] exponentialMean 0.5
+par OpportunisticCellularNetwork.source[2] typename "\"opportunisticcellularnetwork.Source\""
+par OpportunisticCellularNetwork.source[2] id 2
+par OpportunisticCellularNetwork.source[2] isDelayUniform true
+par OpportunisticCellularNetwork.source[2] maxPacketSize 75
+par OpportunisticCellularNetwork.source[2] maxDelay 1ms
+attr unit ms
+par OpportunisticCellularNetwork.source[2] exponentialMean 0.5
+par OpportunisticCellularNetwork.source[3] typename "\"opportunisticcellularnetwork.Source\""
+par OpportunisticCellularNetwork.source[3] id 3
+par OpportunisticCellularNetwork.source[3] isDelayUniform true
+par OpportunisticCellularNetwork.source[3] maxPacketSize 75
+par OpportunisticCellularNetwork.source[3] maxDelay 1ms
+attr unit ms
+par OpportunisticCellularNetwork.source[3] exponentialMean 0.5
+par OpportunisticCellularNetwork.source[4] typename "\"opportunisticcellularnetwork.Source\""
+par OpportunisticCellularNetwork.source[4] id 4
+par OpportunisticCellularNetwork.source[4] isDelayUniform true
+par OpportunisticCellularNetwork.source[4] maxPacketSize 75
+par OpportunisticCellularNetwork.source[4] maxDelay 1ms
+attr unit ms
+par OpportunisticCellularNetwork.source[4] exponentialMean 0.5
 par OpportunisticCellularNetwork typename "\"opportunisticcellularnetwork.simulations.OpportunisticCellularNetwork\""
-par OpportunisticCellularNetwork population 2
+par OpportunisticCellularNetwork population 5
 

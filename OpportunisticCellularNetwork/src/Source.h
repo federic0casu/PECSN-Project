@@ -25,6 +25,6 @@ class Source : public cSimpleModule
 
 };
 
-}
+};
 
 #endif

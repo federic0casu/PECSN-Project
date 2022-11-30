@@ -8,18 +8,18 @@ using namespace omnetpp;
 
 namespace opportunisticcellularnetwork {
 
-/*
- * +-------------------------------------------------------------------------------+
- * | Implements the Cellular simple module. See the NED file for more information. |
- * +-------------------------------------------------------------------------------+
- */
+    /*
+     * +-------------------------------------------------------------------------------+
+     * | Implements the Cellular simple module. See the NED file for more information. |
+     * +-------------------------------------------------------------------------------+
+     */
 
-class Cellular : public cSimpleModule
-{
-  protected:
-    virtual void initialize();
-    virtual void handleMessage(cMessage *msg);
-};
+    class Cellular : public cSimpleModule
+    {
+      protected:
+        virtual void initialize();
+        virtual void handleMessage(cMessage *msg);
+    };
 
 };
 

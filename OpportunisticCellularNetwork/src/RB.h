@@ -13,7 +13,7 @@ public:
     virtual ~RB();
 };
 
-} /* namespace opportunisticcellularnetwork */
+}; /* namespace opportunisticcellularnetwork */
 
 #endif /* __OPPORTUNISTICCELLULARNETWORK_RB_H_ */
 // <3
