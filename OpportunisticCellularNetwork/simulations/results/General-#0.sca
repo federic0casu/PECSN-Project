@@ -1,8 +1,8 @@
 version 3
-run General-0-20221129-14:33:54-13836
+run General-0-20221130-12:27:09-12460
 attr configname General
-attr datetime 20221129-14:33:54
-attr datetimef 20221129-143354
+attr datetime 20221130-12:27:09
+attr datetimef 20221130-122709
 attr experiment General
 attr inifile omnetpp.ini
 attr iterationvars ""
@@ -10,7 +10,7 @@ attr iterationvarsd ""
 attr iterationvarsf ""
 attr measurement ""
 attr network OpportunisticCellularNetwork
-attr processid 13836
+attr processid 12460
 attr repetition 0
 attr replication #0
 attr resultdir results
