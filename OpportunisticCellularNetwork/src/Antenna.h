@@ -37,6 +37,7 @@ class Antenna : public cSimpleModule
 // +-------------------------------------------------------------------------------+
 //  Statistics
     simsignal_t throughputSignal;
+    simsignal_t responseTimeSignal;
     int sentPackets;
     int lostPackets;
 // +-------------------------------------------------------------------------------+

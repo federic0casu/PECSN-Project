@@ -1,8 +1,8 @@
 version 3
-run General-0-20221130-17:44:43-105936
+run General-0-20221201-11:20:19-93530
 attr configname General
-attr datetime 20221130-17:44:43
-attr datetimef 20221130-174443
+attr datetime 20221201-11:20:19
+attr datetimef 20221201-112019
 attr experiment General
 attr inifile omnetpp.ini
 attr iterationvars ""
@@ -10,7 +10,7 @@ attr iterationvarsd ""
 attr iterationvarsf ""
 attr measurement ""
 attr network OpportunisticCellularNetwork
-attr processid 105936
+attr processid 93530
 attr repetition 0
 attr replication #0
 attr resultdir results
@@ -24,7 +24,7 @@ config **.antenna.stage 0
 config **.antenna.timeslot 1
 config **.antenna.queueDimension 0
 config **.cellular[*].typeCQI false
-config **.cellular[*].uniform_r 15
+config **.cellular[*].uniform_r 10
 config num-rngs 3
 config **.cellular[*].rng-0 0
 config **.source[*].rng-0 1
@@ -40,31 +40,31 @@ par OpportunisticCellularNetwork.cellular[0] id 0
 par OpportunisticCellularNetwork.cellular[0] typeCQI false
 par OpportunisticCellularNetwork.cellular[0] binomial_n 0
 par OpportunisticCellularNetwork.cellular[0] binomial_p 0
-par OpportunisticCellularNetwork.cellular[0] uniform_r 15
+par OpportunisticCellularNetwork.cellular[0] uniform_r 10
 par OpportunisticCellularNetwork.cellular[1] typename "\"opportunisticcellularnetwork.Cellular\""
 par OpportunisticCellularNetwork.cellular[1] id 1
 par OpportunisticCellularNetwork.cellular[1] typeCQI false
 par OpportunisticCellularNetwork.cellular[1] binomial_n 0
 par OpportunisticCellularNetwork.cellular[1] binomial_p 0
-par OpportunisticCellularNetwork.cellular[1] uniform_r 15
+par OpportunisticCellularNetwork.cellular[1] uniform_r 10
 par OpportunisticCellularNetwork.cellular[2] typename "\"opportunisticcellularnetwork.Cellular\""
 par OpportunisticCellularNetwork.cellular[2] id 2
 par OpportunisticCellularNetwork.cellular[2] typeCQI false
 par OpportunisticCellularNetwork.cellular[2] binomial_n 0
 par OpportunisticCellularNetwork.cellular[2] binomial_p 0
-par OpportunisticCellularNetwork.cellular[2] uniform_r 15
+par OpportunisticCellularNetwork.cellular[2] uniform_r 10
 par OpportunisticCellularNetwork.cellular[3] typename "\"opportunisticcellularnetwork.Cellular\""
 par OpportunisticCellularNetwork.cellular[3] id 3
 par OpportunisticCellularNetwork.cellular[3] typeCQI false
 par OpportunisticCellularNetwork.cellular[3] binomial_n 0
 par OpportunisticCellularNetwork.cellular[3] binomial_p 0
-par OpportunisticCellularNetwork.cellular[3] uniform_r 15
+par OpportunisticCellularNetwork.cellular[3] uniform_r 10
 par OpportunisticCellularNetwork.cellular[4] typename "\"opportunisticcellularnetwork.Cellular\""
 par OpportunisticCellularNetwork.cellular[4] id 4
 par OpportunisticCellularNetwork.cellular[4] typeCQI false
 par OpportunisticCellularNetwork.cellular[4] binomial_n 0
 par OpportunisticCellularNetwork.cellular[4] binomial_p 0
-par OpportunisticCellularNetwork.cellular[4] uniform_r 15
+par OpportunisticCellularNetwork.cellular[4] uniform_r 10
 par OpportunisticCellularNetwork.source[0] typename "\"opportunisticcellularnetwork.Source\""
 par OpportunisticCellularNetwork.source[0] id 0
 par OpportunisticCellularNetwork.source[0] isDelayUniform true

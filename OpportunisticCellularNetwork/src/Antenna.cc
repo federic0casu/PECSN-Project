@@ -27,6 +27,8 @@ void Antenna::initialize()
 
     throughputSignal = registerSignal("throughputSignal");
 
+    responseTimeSignal = registerSignal("responseTimeSignal");
+
     lostPackets = sentPackets = 0;
 
     switch(par("stage").intValue()) {
@@ -372,6 +374,12 @@ int Antenna::allocateRBs(std::vector<std::pair<simtime_t,int>>* currentQueue, Fr
             }
             else
             {
+
+                //Get timestamp field of the packet
+                simtime_t arrivalTimestamp = currentQueue->begin()->first;
+                // Recording responseTime statistics
+                emit(responseTimeSignal, simTime() - arrivalTimestamp);
+
                 allocatedBytes += currentPacketSize;
                 currentQueue->erase(currentQueue->begin());
 

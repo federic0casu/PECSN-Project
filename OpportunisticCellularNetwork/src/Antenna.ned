@@ -16,6 +16,10 @@ simple Antenna
     	@signal[throughputSignal](type=int);
         @statistic[throughput](source="throughputSignal"; record=vector;);
     // +-------------------------------------------------------------------------------+
+        // ResponseTime: 
+    	@signal[responseTimeSignal](type=simtime_t);
+        @statistic[responseTime](source="responseTimeSignal"; record=vector;);
+    // +-------------------------------------------------------------------------------+
     gates:
         input  inCellular[population];
         input  inSource[population];

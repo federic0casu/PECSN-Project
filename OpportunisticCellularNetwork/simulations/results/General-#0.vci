@@ -1,9 +1,9 @@
-file 965 1669826711                                             
+file 63043 1669890028                                           
 version 3
-run General-0-20221130-17:44:43-105936
+run General-0-20221201-11:20:19-93530
 attr configname General
-attr datetime 20221130-17:44:43
-attr datetimef 20221130-174443
+attr datetime 20221201-11:20:19
+attr datetimef 20221201-112019
 attr experiment General
 attr inifile omnetpp.ini
 attr iterationvars ""
@@ -11,7 +11,7 @@ attr iterationvarsd ""
 attr iterationvarsf ""
 attr measurement ""
 attr network OpportunisticCellularNetwork
-attr processid 105936
+attr processid 93530
 attr repetition 0
 attr replication #0
 attr resultdir results
@@ -25,7 +25,7 @@ config **.antenna.stage 0
 config **.antenna.timeslot 1
 config **.antenna.queueDimension 0
 config **.cellular[*].typeCQI false
-config **.cellular[*].uniform_r 15
+config **.cellular[*].uniform_r 10
 config num-rngs 3
 config **.cellular[*].rng-0 0
 config **.source[*].rng-0 1
@@ -35,5 +35,10 @@ vector 0 OpportunisticCellularNetwork.antenna throughput:vector ETV
 attr "" ""
 attr recordingmode vector
 attr source throughputSignal
-0	955 9 11 11 0 0 1 0 0 0 0
+vector 1 OpportunisticCellularNetwork.antenna responseTime:vector ETV
+attr "" ""
+attr recordingmode vector
+attr source responseTimeSignal
+0	1091 4332 11 9327 0 300 301 0 906 86221 33713027
+1	5423 57619 44 9327 1 300 2280 0.000323523302 11.878649075043 2967.1169702835 9837.7928981555
 

@@ -39,6 +39,7 @@ void Cellular::handleMessage(cMessage *msg)
         // New cqi message to send
         int cell_id = par("id").intValue();
         CQIMessage * cqi = new CQIMessage();
+        CQI_ = calculateCQI(); //Calculate every timeslot
         cqi->setId(cell_id);
         cqi->setCQI(CQI_);
 
