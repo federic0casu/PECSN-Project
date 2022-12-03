@@ -10,7 +10,7 @@ simple Source
  	    int id;
  	    
  	    // uniform or exp delay 
- 	    bool isDelayUniform = default(true);
+ 	    bool isDelayUniform = default(false);
  	    
  	    // max packet dimension
     	int maxPacketSize = 75;

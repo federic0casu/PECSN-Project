@@ -212,13 +212,15 @@ void Antenna::handleFrame()
     std::sort(CQIs.begin(), CQIs.end(), [](CQIPacket *X, CQIPacket *Y){ return X->getCQI()>Y->getCQI();});
 
     // Once std::vector CQIs has been sorted the Antenna can pack a new Frame.
-    int remainingRBs = 25, currentUser, queuedBytes, currentCQI;
+    int remainingRBs = par("maxFrameDim"), currentUser, queuedBytes, currentCQI;
 
     // To store the total number of bytes sent in a timeslot.
     int bytesToSend = 0;
 
     // Frame to send
-    Frame* frameToSend = new Frame();
+
+    Frame * frameToSend = new Frame;
+
 
     for(int i = 0; i < population; i++)
     {
@@ -270,6 +272,8 @@ void Antenna::handleFrame()
 
         getQueueById(currentUser)->resetQueue();
     }
+
+    delete(frameToSend);
 
     // Recording throughtput's statistics
     emit(throughputSignal, bytesToSend);
@@ -328,6 +332,7 @@ int Antenna::allocateRBs(std::vector<std::pair<simtime_t,int>>* currentQueue, Fr
 
     do
     {
+
         currentPacketSize = currentQueue->begin()->second;
 
         // If the packet under service is larger than RB size (RB size = current CQI)
@@ -381,7 +386,15 @@ int Antenna::allocateRBs(std::vector<std::pair<simtime_t,int>>* currentQueue, Fr
                 emit(responseTimeSignal, simTime() - arrivalTimestamp);
 
                 allocatedBytes += currentPacketSize;
+
+                // AUTHOR : Daniel
+                Packet * packet = new Packet("packetInfo");
+                packet->setSize(currentPacketSize);
+                packet->setTimestamp(currentQueue->begin()->first);
+
                 currentQueue->erase(currentQueue->begin());
+
+                send(packet,"out",currentUser);
 
                 sentPackets += 1;
 
