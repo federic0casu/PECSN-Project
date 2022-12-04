@@ -3,21 +3,33 @@
 
 #include <vector>
 #include "RB.h"
+#include <omnetpp.h>
 
 namespace opportunisticcellularnetwork {
 
-class Frame {
-private:
+class Frame;
+
+}  // namespace opportunisticcellularnetwork
+
+
+namespace opportunisticcellularnetwork {
+
+class Frame : public ::omnetpp::cMessage {
+protected:
     std::vector<RB*> frame;
+    int usedRB = 0;
 public:
     Frame();
     void addRB(int, int, int);
-    int getIdRB(int);   //E
-    int getDimRB(int);  //E
-    int getBytesRB(int);//E
+    int getUsedRB();
+    int getIdRB(int);
+    int getDimRB(int);
+    int getBytesRB(int);
     virtual ~Frame();
 };
 
-} /* namespace opportunisticcellularnetwork */
-
+}
+ /* namespace opportunisticcellularnetwork */
 #endif /* __OPPORTUNISTICCELLULARNETWORK_FRAME_H_ */
+
+

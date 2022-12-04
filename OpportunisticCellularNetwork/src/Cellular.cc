@@ -1,5 +1,6 @@
 #include "Cellular.h"
 #include "Constant.h"
+#include "Frame.h"
 
 #define DEBUG ;
 
@@ -15,6 +16,10 @@ Define_Module(Cellular);
 
 void Cellular::initialize()
 {
+    // register statistics
+    userThroughputSignal = registerSignal("userThroughputSignal");
+    userResponseTimeSignal = registerSignal("userResponseTimeSignal");
+
     id_ = par("id").intValue();
     typeCQI_ = par("typeCQI").boolValue();
     CQI_ = calculateCQI();
@@ -23,6 +28,7 @@ void Cellular::initialize()
 
 void Cellular::handleMessage(cMessage *msg)
 {
+
     /* +--------------------------------------------------------------------------------+
      * | Handshake                                                                      |
      * | The Antenna sends a CQI request to all the cellular.                           |
@@ -35,6 +41,13 @@ void Cellular::handleMessage(cMessage *msg)
         #ifdef DEBUG
         EV << getName() << getId() <<"::handleMessage() - A new CQI REQUEST is just arrived!" << endl;
         #endif
+
+        // emit past TS received bytes
+
+        emit(userThroughputSignal,receivedBytesTS);
+
+        // reset n of bytes received in past TS
+        receivedBytesTS = 0;
 
         // New cqi message to send
         int cell_id = par("id").intValue();
@@ -49,26 +62,30 @@ void Cellular::handleMessage(cMessage *msg)
         EV << getName() << getId() <<"::handleMessage() - A new CQI RESPONSE has just been sent! CQI=" << CQI_ << endl;
         #endif
     }
-
-
-    /* +--------------------------------------------------------------------------------+
-     * | Frame Detection                                                                |
-     * | All the devices receive the frames (broadcast), so the cellular has to         |
-     * | detect which RBs inside the frame  addressed to it                             |
-     * | Format: |RB=dest|dim|bytes|RB=   |                                             |
-     * +--------------------------------------------------------------------------------+
-     */
-
-    if(strcmp(msg->getName(), "Frame") == 0)
+    else
     {
+        /* +--------------------------------------------------------------------------------+
+            * | Frame Detection                                                                |
+            * | All the devices receive the frames (broadcast), so the cellular has to         |
+            * | detect which RBs inside the frame  addressed to it                             |
+            * | Format: |RB=dest|dim|bytes|RB=   |                                             |
+            * +--------------------------------------------------------------------------------+
+            */
+
         #ifdef DEBUG
         EV << getName() << getId() <<"::handleMessage() - Frame detection" << endl;
         #endif
 
-        Frame* frameReceived = check_and_cast<Frame*>(msg);
-        Frame* frameDetected = new Frame();
 
-        extractRB(frameReceived, frameDetected);
+        Packet* packetInfo = check_and_cast<Packet*>(msg);
+        receivedBytesTS += packetInfo->getSize();
+        emit(userResponseTimeSignal, simTime() - packetInfo->getTimestamp());
+
+        #ifdef DEBUG
+        EV << getName() << getId() <<"::handleMessage() - Frame detection - frame, received packet - size = "<< packetInfo->getSize() << endl;
+        #endif
+
+
     }
 
 

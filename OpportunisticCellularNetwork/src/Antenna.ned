@@ -7,12 +7,13 @@ simple Antenna
         int stage = default(0);
         int population;
         int timeslot;
+        int maxFrameDim = 25;
     // +-------------------------------------------------------------------------------+
     //  Scenario: queues of fixed dimension.
     	int queueDimension;
     // +-------------------------------------------------------------------------------+
     // +-------------------------------------------------------------------------------+
-    //  Throughput: number of bytes sent at each timeslot
+    //  GENERAL Throughput: TOTAL number of bytes sent at each timeslot 
     	@signal[throughputSignal](type=int);
         @statistic[throughput](source="throughputSignal"; record=vector;);
     // +-------------------------------------------------------------------------------+

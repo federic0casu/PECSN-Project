@@ -9,8 +9,8 @@
 #include "CQIPacket.h"
 #include "Packet_m.h"
 #include "Source.h"
-
 #include "Frame.h"
+
 #include "UserQueue.h"
 
 using namespace omnetpp;
@@ -28,6 +28,12 @@ namespace opportunisticcellularnetwork {
 class Cellular : public cSimpleModule
 {
   private:
+    // signals
+    simsignal_t userResponseTimeSignal;
+    simsignal_t userThroughputSignal;
+
+    int receivedBytesTS = 0;
+
     int id_;
     bool typeCQI_;
     int CQI_;
