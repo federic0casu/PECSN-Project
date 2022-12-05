@@ -43,18 +43,17 @@ class Antenna : public cSimpleModule
     int sentPackets;
     int lostPackets;
 // +-------------------------------------------------------------------------------+
-    virtual int queuedBytesById(int);
-    virtual int CQI_to_BYTES(int);
-    virtual UserQueue* getQueueById(int);
-    virtual int allocateRBs(std::vector<std::pair<simtime_t,int>>*, Frame*, int, int);
-  protected:
-    virtual void initialize() override;
-    virtual void handleMessage(cMessage *msg) override;
-    virtual void finish() override;
     virtual void handleSelfMessage(cMessage *msg);
     virtual void handlePacket(cMessage *msg);
     virtual void handleCQI(cMessage *msg);
     virtual void handleFrame();
+    virtual int CQI_to_BYTES(int);
+    virtual int serveUser(int, int, int*, Frame*);
+    virtual UserQueue* getQueueById(int);
+  protected:
+    virtual void initialize() override;
+    virtual void handleMessage(cMessage *msg) override;
+    virtual void finish() override;
 };
 
 }

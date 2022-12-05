@@ -20,10 +20,12 @@ void Cellular::initialize()
     userThroughputSignal = registerSignal("userThroughputSignal");
     userResponseTimeSignal = registerSignal("userResponseTimeSignal");
 
+    receivedBytesTS = 0;
+
     id_ = par("id").intValue();
     typeCQI_ = par("typeCQI").boolValue();
     CQI_ = calculateCQI();
-            //binomial(par("binomial_n").intValue(), par("binomial_p").intValue());
+    //binomial(par("binomial_n").intValue(), par("binomial_p").intValue());
 }
 
 void Cellular::handleMessage(cMessage *msg)
@@ -39,12 +41,11 @@ void Cellular::handleMessage(cMessage *msg)
     if(strcmp(msg->getName(), "CQI") == 0)
     {
         #ifdef DEBUG
-        EV << getName() << getId() <<"::handleMessage() - A new CQI REQUEST is just arrived!" << endl;
+        EV << getName() << par("id").intValue() <<"::handleMessage() - A new CQI REQUEST is just arrived!" << endl;
         #endif
 
         // emit past TS received bytes
-
-        emit(userThroughputSignal,receivedBytesTS);
+        emit(userThroughputSignal, receivedBytesTS);
 
         // reset n of bytes received in past TS
         receivedBytesTS = 0;
@@ -59,7 +60,7 @@ void Cellular::handleMessage(cMessage *msg)
         send(cqi, "out");
 
         #ifdef DEBUG
-        EV << getName() << getId() <<"::handleMessage() - A new CQI RESPONSE has just been sent! CQI=" << CQI_ << endl;
+        EV << getName() << par("id").intValue() <<"::handleMessage() - A new CQI RESPONSE has just been sent! CQI=" << CQI_ << endl;
         #endif
     }
     else
@@ -73,7 +74,7 @@ void Cellular::handleMessage(cMessage *msg)
             */
 
         #ifdef DEBUG
-        EV << getName() << getId() <<"::handleMessage() - Frame detection" << endl;
+        EV << getName() << par("id").intValue() <<"::handleMessage() - Frame detection" << endl;
         #endif
 
 
@@ -82,7 +83,7 @@ void Cellular::handleMessage(cMessage *msg)
         emit(userResponseTimeSignal, simTime() - packetInfo->getTimestamp());
 
         #ifdef DEBUG
-        EV << getName() << getId() <<"::handleMessage() - Frame detection - frame, received packet - size = "<< packetInfo->getSize() << endl;
+        EV << getName() << par("id").intValue() <<"::handleMessage() - Frame detection - frame, received packet - size = "<< packetInfo->getSize() << endl;
         #endif
 
 

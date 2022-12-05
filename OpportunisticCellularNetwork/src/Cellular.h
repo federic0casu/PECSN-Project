@@ -32,8 +32,7 @@ class Cellular : public cSimpleModule
     simsignal_t userResponseTimeSignal;
     simsignal_t userThroughputSignal;
 
-    int receivedBytesTS = 0;
-
+    int receivedBytesTS;
     int id_;
     bool typeCQI_;
     int CQI_;

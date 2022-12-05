@@ -25,7 +25,6 @@ public:
     virtual int getQueueDimension();
     virtual int getFreeSlots();
     virtual void addPacket(int);
-    virtual int queuedBytes();
     virtual void showQueue();
     virtual void resetQueue();
     virtual std::vector<std::pair<simtime_t,int>>* getQueue();

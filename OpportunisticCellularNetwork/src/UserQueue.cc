@@ -36,20 +36,6 @@ void UserQueue::addPacket(int bytes)
     freeSlots--;
 }
 
-int UserQueue::queuedBytes()
-{
-    int numberOfBytes = 0;
-    for(int i = 0; i < queue.size(); i++)
-        numberOfBytes += queue[i].second;
-    return numberOfBytes;
-}
-
-std::vector<std::pair<simtime_t,int>>* UserQueue::getQueue()
-{
-    return &queue;
-}
-
-
 void UserQueue::showQueue()
 {
     EV << "Queue user" << getId() << ": [";
@@ -62,6 +48,10 @@ void UserQueue::showQueue()
     EV << "]" << endl;
 }
 
+std::vector<std::pair<simtime_t,int>>* UserQueue::getQueue()
+{
+    return &queue;
+}
 
 
 } /* namespace opportunisticcellularnetwork */

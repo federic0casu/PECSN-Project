@@ -15,11 +15,8 @@ simple Source
  	    // max packet dimension
     	int maxPacketSize = 75;
     	
-    	// max delay between consecutive packets arrivals  
-    	double maxDelay @unit(ms) = 1ms;
-    	
     	// rate between consecutive packets arrivals
-    	double exponentialMean = default(0.5);
+    	double exponentialMean @unit(s) = 5ms;
 
    gates:
         output out;

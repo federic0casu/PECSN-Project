@@ -13,21 +13,11 @@ Define_Module(Source);
  * +-------------------------------------------------------------------------------+
  */
 
-simtime_t Source::getDelay(bool isUniform)
-{
-//  AUTHOR : DANIEL
-    if (isUniform)
-        return uniform(0,par("maxDelay"), 0);
-    else
-        return exponential((simtime_t)par("exponentialMean"), 0);
-}
-
-
 // When a source gets initialized it starts by setting a timer
 void Source::initialize()
 {
 //  AUTHOR : DANIEL
-    simtime_t delay = getDelay(par("isDelayUniform"));
+    simtime_t delay = exponential((simtime_t)par("exponentialMean"), 0);
     scheduleAt(simTime() + delay, timerMessage);
 }
 
@@ -47,14 +37,14 @@ void Source::handleMessage(cMessage *msg)
     packet->setIndex(par("id"));
 
     #ifdef DEBUG
-    EV << getName() << getId() << "::handleMessage() - Packet with size=" << packet->getSize() << " sent at " << packet->getTimestamp() << endl;
+    EV << getName() << par("id").intValue()*2 << "::handleMessage() - Packet with size=" << packet->getSize() << " sent at " << packet->getTimestamp() << endl;
     #endif
 
     // sending out the message
     send(packet, "out");
 
     // re-scheduling timer
-    simtime_t delay = getDelay(par("isDelayUniform"));
+    simtime_t delay = exponential((simtime_t)par("exponentialMean"), 0);
     scheduleAt(simTime() + delay, msg);
 
 }

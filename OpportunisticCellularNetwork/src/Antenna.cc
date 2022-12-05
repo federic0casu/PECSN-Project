@@ -13,9 +13,8 @@ Define_Module(Antenna);
 
 void Antenna::initialize()
 {
-/*  AUTHOR : FEDERICO
- * +-------------------------------------------------------------------------------+
- * | This metod handles the Antenna's setup at the beginning of the simulation.    |
+/* +-------------------------------------------------------------------------------+
+ * | This method handles the Antenna's setup at the beginning of the simulation.   |
  * +-------------------------------------------------------------------------------+
  */
 
@@ -23,10 +22,10 @@ void Antenna::initialize()
     population = par("population").intValue();
 
     // Retrieving timeslot duration (omnetpp.ini)
-    timeslot = (simtime_t)par("timeslot");
+    timeslot = (simtime_t)par("timeslot").doubleValue();
 
+    // Registering signals
     throughputSignal = registerSignal("throughputSignal");
-
     responseTimeSignal = registerSignal("responseTimeSignal");
 
     lostPackets = sentPackets = 0;
@@ -34,9 +33,7 @@ void Antenna::initialize()
     switch(par("stage").intValue()) {
         case 1:
         {
-        // +-------------------------------------------------------------------------------+
-        //  Scenario: queues of fixed dimension.
-        // +-------------------------------------------------------------------------------+
+            // Scenario 1: queues of fixed dimension.
             #ifdef DEBUG
             EV << "Antenna::initialize() - Scenario 1: queues of fixed dimension, population: " << population << endl;
             #endif
@@ -50,9 +47,7 @@ void Antenna::initialize()
         } break;
         default:
         {
-        // +-------------------------------------------------------------------------------+
-        //  Scenario: queues of infinite dimension.
-        // +-------------------------------------------------------------------------------+
+            // Scenario 0: queues of infinite dimension.
             #ifdef DEBUG
             EV << "Antenna::initialize() - Scenario 0: queues of infinite dimension, population: " << population << endl;
             #endif
@@ -69,38 +64,38 @@ void Antenna::initialize()
     #endif
 }
 
-
-
 void Antenna::handleMessage(cMessage *msg)
 {
-/*  AUTHOR : FEDERICO
- * +--------------------------------------------------------------------------------+
- * | Per poter provare i metodi handleFrame() e handleCQI() avevo bisogno di simu-  |
- * | lare il comportamento dell'antenna. OVVIAMENTE questo codice deve essere scrit-|
- * | to nuovamente da chi ha questo compito. Quindi eliminate tutto :) !            |
- * +--------------------------------------------------------------------------------+
- */
-
-    // If a TIMESLOT expires...
+    // A TIMESLOT expires
     if(msg->isSelfMessage())
     {
         handleSelfMessage(msg);
     }
-    // If a new CQI arrives...
+    // A new CQI arrives
     else if(msg->arrivedOn("inCellular"))
     {
         handleCQI(msg);
     }
-    // If a new PACKET arrives...
+    // A new PACKET arrives
     else
     {
         handlePacket(msg);
     }
 }
 
+void Antenna::finish()
+{
+// +-----------------------------------------------------------------------------+
+//  Packet loss (%): % of packets that cannot be queued
+    if(par("stage").intValue() == 1)
+        recordScalar("PacketLoss%", (lostPackets/sentPackets)*100);
+// +-----------------------------------------------------------------------------+
+}
+
 void Antenna::handlePacket(cMessage *msg) {
 
-/*  AUTHOR : DANIEL
+/* +----------------------------------------------------------------------------------+
+ * | AUTHOR : DANIEL                                                                  |
  * +----------------------------------------------------------------------------------+
  * | This metod is used to handle the packets incoming from the sources. Whenever a   |
  * | new packet arrives we check the gate number and the packet is stored in the queue|
@@ -139,7 +134,8 @@ void Antenna::handlePacket(cMessage *msg) {
 
 void Antenna::handleSelfMessage(cMessage *msg)
 {
-/*  AUTHOR : FEDERICO
+/* +--------------------------------------------------------------------------------+
+ * | AUTHOR : FEDERICO                                                              |
  * +--------------------------------------------------------------------------------+
  * | This metod is used to handle the CQI request process. For each user registered |
  * | to the network, the Antenna requests a CQI at the beginning of each timeslot.  |
@@ -165,7 +161,8 @@ void Antenna::handleSelfMessage(cMessage *msg)
 
 void Antenna::handleCQI(cMessage* msg)
 {
-/*  AUTHOR : FEDERICO
+/* +----------------------------------------------------------------------------------+
+ * | AUTHOR : FEDERICO                                                                |
  * +----------------------------------------------------------------------------------+
  * | This method is used to manage CQIs. When a timeslot begins each user sends a CQI |
  * | packet. The Antenna stores CQIs in std::vector<CQIPacket> CQIs. Each element of  |
@@ -198,7 +195,8 @@ void Antenna::handleCQI(cMessage* msg)
 
 void Antenna::handleFrame()
 {
-/*  AUTHOR : FEDERICO
+/* +-----------------------------------------------------------------------------------+
+ * | AUTHOR : FEDERICO                                                                 |
  * +-----------------------------------------------------------------------------------+
  * | This method is used to compose a new Frame. The Antenna composes a frame made up  |
  * | of 25 RBs. The antenna serves its users using an opportunistic policy: backlogged |
@@ -212,65 +210,27 @@ void Antenna::handleFrame()
     std::sort(CQIs.begin(), CQIs.end(), [](CQIPacket *X, CQIPacket *Y){ return X->getCQI()>Y->getCQI();});
 
     // Once std::vector CQIs has been sorted the Antenna can pack a new Frame.
-    int remainingRBs = par("maxFrameDim"), currentUser, queuedBytes, currentCQI;
+    int remainingRBs = par("maxFrameDim"), currentUser, currentCQI;
 
     // To store the total number of bytes sent in a timeslot.
     int bytesToSend = 0;
 
     // Frame to send
-
-    Frame * frameToSend = new Frame;
-
+    Frame* frameToSend = new Frame();
 
     for(int i = 0; i < population; i++)
     {
         // Retrieving the user under service.
         currentUser = CQIs[i]->getId();
 
-        // Retrieving the total number of bytes that the current user has in his/her queue.
-        queuedBytes = queuedBytesById(currentUser);
-
-        // The current user has an empty queue.
-        if(queuedBytes == 0)
-        {
-            #ifdef DEBUG
-            EV << "Antenna::handleFrame() - user" << currentUser << " has an empty queue! (CQI=" << CQIs[i]->getCQI() << ")" << endl;
-            #endif
-            continue;
-        }
-
-        #ifdef DEBUG
-        if(queuedBytes == -1)
-        {
-            EV << "Antenna::handleFrame() - FATAL ERROR - user" << currentUser << " not recognized!" << endl;
-            continue;
-        }
-        #endif
-
-        // Retrieving the CQI sent by the current user.
+        // Retrieving the current CQI sent by the user under service.
         currentCQI = CQIs[i]->getCQI();
 
-        // Number of required RBs.
-        int numRBs = queuedBytes/CQI_to_BYTES(currentCQI);
+        #ifdef DEBUG
+        EV << "Antenna::handleFrame() - user" << currentUser << " is currently under service (CQI=" << currentCQI << ")" << endl;
+        #endif
 
-        // Checking if another RB is needed.
-        if(queuedBytes > numRBs*CQI_to_BYTES(currentCQI))
-            numRBs++;
-
-        // An user can be served if and only if the number of unallocated RBs is large enough.
-        if(numRBs > remainingRBs)
-        {
-            #ifdef DEBUG
-            EV << "Antenna::handleFrame() - user" << currentUser << " cannot be served! remainingRBs=" << remainingRBs <<", currentCQI=" << currentCQI << "(" << CQI_to_BYTES(currentCQI) << " bytes), queuedBytes=" << queuedBytes << endl;
-            #endif
-            continue;
-        }
-
-        remainingRBs -= numRBs;
-
-        bytesToSend += allocateRBs(getQueueById(currentUser)->getQueue(), frameToSend, currentCQI, currentUser);
-
-        getQueueById(currentUser)->resetQueue();
+        bytesToSend += serveUser(currentUser, currentCQI, &remainingRBs, frameToSend);
     }
 
     delete(frameToSend);
@@ -279,26 +239,87 @@ void Antenna::handleFrame()
     emit(throughputSignal, bytesToSend);
 }
 
-int Antenna::queuedBytesById(int id)
+int Antenna::serveUser(int currentUser, int currentCQI, int *remainingRBs, Frame* frame)
 {
-//  AUTHOR : FEDERICO
-    for(UserQueue *currentUser : userQueues)
-    {
-        if(currentUser->getId() == id)
-            return currentUser->queuedBytes();
-    }
-    return -1;
-}
+    // Retrieving the queue associated to the user under service.
+    UserQueue* currentQueue = getQueueById(currentUser);
 
-UserQueue* Antenna::getQueueById(int id)
-{
-//  AUTHOR : FEDERICO
-    for(UserQueue *currentUser : userQueues)
+    int bytesAllocated = 0, currentPacketSize, startingPacketSize = -1, remainingBytesUsedByCurrentRB = CQI_to_BYTES(currentCQI);
+
+    while(!currentQueue->getQueue()->empty())
     {
-        if(currentUser->getId() == id)
-            return currentUser;
+        // Service policy is FIFO -> Packets must be served starting from the oldest.
+        currentPacketSize = currentQueue->getQueue()->begin()->second;
+
+        if(startingPacketSize == -1)
+            startingPacketSize = currentQueue->getQueue()->begin()->second;
+
+        if(currentPacketSize > CQI_to_BYTES(currentCQI)*(*remainingRBs))
+        {
+            #ifdef DEBUG
+            EV << "Antenna::serveUser() - user" << currentUser << " can no longer be served (packetSize=" << startingPacketSize << ", remainingRBs=" << *remainingRBs << ")" << endl;
+            #endif
+            if(remainingBytesUsedByCurrentRB != 0)
+            {
+                (*remainingRBs)--;
+                bytesAllocated += (CQI_to_BYTES(currentCQI) - remainingBytesUsedByCurrentRB);
+                frame->addRB(currentUser, CQI_to_BYTES(currentCQI), CQI_to_BYTES(currentCQI) - remainingBytesUsedByCurrentRB);
+                #ifdef DEBUG
+                EV << "Antenna::serveUser() - A NEW RB has been allocated (size=" << CQI_to_BYTES(currentCQI) << ", allocatedBytes=" << CQI_to_BYTES(currentCQI)-remainingBytesUsedByCurrentRB << ", remainingRBs=" << *remainingRBs << ")" << endl;
+                #endif
+            }
+            return bytesAllocated;
+        }
+
+        if(remainingBytesUsedByCurrentRB < currentPacketSize)
+        {
+            currentQueue->getQueue()->begin()->second -= remainingBytesUsedByCurrentRB;
+            remainingBytesUsedByCurrentRB = CQI_to_BYTES(currentCQI);
+            (*remainingRBs)--;
+            bytesAllocated += CQI_to_BYTES(currentCQI);
+            frame->addRB(currentUser, CQI_to_BYTES(currentCQI), CQI_to_BYTES(currentCQI));
+            #ifdef DEBUG
+            EV << "Antenna::serveUser() - A NEW RB has been allocated (size=" << CQI_to_BYTES(currentCQI) << ", allocatedBytes=" << CQI_to_BYTES(currentCQI) << ", remainingRBs=" << *remainingRBs << ")" << endl;
+            #endif
+        }
+        else
+        {
+            remainingBytesUsedByCurrentRB -= currentQueue->getQueue()->begin()->second;
+
+            // Statistics
+            Packet * packet = new Packet("packet");
+            packet->setSize(startingPacketSize);
+            packet->setTimestamp(currentQueue->getQueue()->begin()->first);
+            send(packet, "out", currentUser);
+            // End statistics
+
+            #ifdef DEBUG
+            EV << "Antenna::serveUser() - A NEW PACKET has been allocated (packetSize=" << startingPacketSize << ", remainingRBs=" << *remainingRBs << ")" << endl;
+            #endif
+
+            startingPacketSize = -1;
+            currentQueue->getQueue()->erase(currentQueue->getQueue()->begin());
+
+            // If the current packet is the last one the Antenna must allocate the packet even if the RB
+            // is not entirely used.
+            if(currentQueue->getQueue()->empty())
+            {
+                (*remainingRBs)--;
+                bytesAllocated += (CQI_to_BYTES(currentCQI) - remainingBytesUsedByCurrentRB);
+                frame->addRB(currentUser, CQI_to_BYTES(currentCQI), CQI_to_BYTES(currentCQI) - remainingBytesUsedByCurrentRB);
+                #ifdef DEBUG
+                EV << "Antenna::serveUser() - A NEW RB has been allocated (size=" << CQI_to_BYTES(currentCQI) << ", allocatedBytes=" << CQI_to_BYTES(currentCQI)-remainingBytesUsedByCurrentRB << ", remainingRBs=" << *remainingRBs << ")" << endl;
+                #endif
+            }
+        }
     }
-    return NULL;
+
+    #ifdef DEBUG
+    if(currentQueue->getQueue()->empty() && bytesAllocated == 0)
+        EV << "Antenna::serveUser() - user" << currentUser << " has an empty queue!" << endl;
+    #endif
+
+    return bytesAllocated;
 }
 
 int Antenna::CQI_to_BYTES(int CQI)
@@ -325,112 +346,15 @@ int Antenna::CQI_to_BYTES(int CQI)
     }
 }
 
-int Antenna::allocateRBs(std::vector<std::pair<simtime_t,int>>* currentQueue, Frame* frameToSend, int currentCQI, int currentUser)
+UserQueue* Antenna::getQueueById(int id)
 {
 //  AUTHOR : FEDERICO
-    int bytesToSend = 0, allocatedBytes = 0, remainingBytes = 0, currentPacketSize;
-
-    do
+    for(UserQueue *currentUser : userQueues)
     {
-
-        currentPacketSize = currentQueue->begin()->second;
-
-        // If the packet under service is larger than RB size (RB size = current CQI)
-        if(currentPacketSize > CQI_to_BYTES(currentCQI))
-        {
-            remainingBytes = CQI_to_BYTES(currentCQI) - allocatedBytes;
-            allocatedBytes += remainingBytes;
-
-            currentQueue->begin()->second -= remainingBytes;
-
-            frameToSend->addRB(currentUser, CQI_to_BYTES(currentCQI), allocatedBytes);
-
-            #ifdef DEBUG
-            EV << "Antenna::handleFrame() - A new RB has been allocated - currentCQI=" << currentCQI << "(" << CQI_to_BYTES(currentCQI) << " bytes), allocated bytes=" << allocatedBytes << endl;
-            getQueueById(currentUser)->showQueue();
-            #endif
-
-            // Updating the total number of bytes sent in a timeslot.
-            bytesToSend += allocatedBytes;
-
-            allocatedBytes = 0;
-        }
-        else
-        {
-            remainingBytes = CQI_to_BYTES(currentCQI) - allocatedBytes;
-
-            if(currentPacketSize > remainingBytes)
-            {
-                allocatedBytes += remainingBytes;
-
-                currentQueue->begin()->second -= remainingBytes;
-
-                frameToSend->addRB(currentUser, CQI_to_BYTES(currentCQI), allocatedBytes);
-
-                #ifdef DEBUG
-                EV << "Antenna::handleFrame() - A new RB has been allocated - currentCQI=" << currentCQI << "(" << CQI_to_BYTES(currentCQI) << " bytes), allocated bytes=" << allocatedBytes << endl;
-                getQueueById(currentUser)->showQueue();
-                #endif
-
-                // Updating the total number of bytes sent in a timeslot.
-                bytesToSend += allocatedBytes;
-
-                allocatedBytes = 0;
-            }
-            else
-            {
-
-                //Get timestamp field of the packet
-                simtime_t arrivalTimestamp = currentQueue->begin()->first;
-                // Recording responseTime statistics
-                emit(responseTimeSignal, simTime() - arrivalTimestamp);
-
-                allocatedBytes += currentPacketSize;
-
-                // AUTHOR : Daniel
-                Packet * packet = new Packet("packetInfo");
-                packet->setSize(currentPacketSize);
-                packet->setTimestamp(currentQueue->begin()->first);
-
-                currentQueue->erase(currentQueue->begin());
-
-                send(packet,"out",currentUser);
-
-                sentPackets += 1;
-
-                #ifdef DEBUG
-                EV << "Antenna::handleFrame() - A PACKET has been entirely allocated!" << endl;
-                #endif
-            }
-
-            // If the current packet is the last one the Antenna must allocate
-            // a RB even if is not completely full.
-            if(currentQueue->empty())
-            {
-                frameToSend->addRB(currentUser, CQI_to_BYTES(currentCQI), allocatedBytes);
-
-                #ifdef DEBUG
-                EV << "Antenna::handleFrame() - A new RB has been allocated - currentCQI=" << currentCQI << "(" << CQI_to_BYTES(currentCQI) << " bytes), allocated bytes=" << allocatedBytes << endl;
-                getQueueById(currentUser)->showQueue();
-                #endif
-
-                // Updating the total number of bytes sent in a timeslot.
-                bytesToSend += allocatedBytes;
-            }
-        }
-
-    } while(!currentQueue->empty());
-
-    return bytesToSend;
-}
-
-void Antenna::finish()
-{
-// +-----------------------------------------------------------------------------+
-//  Packet loss (%): % of packets that cannot be queued
-    if(par("stage").intValue() == 1)
-        recordScalar("PacketLoss%", (lostPackets/sentPackets)*100);
-// +-----------------------------------------------------------------------------+
+        if(currentUser->getId() == id)
+            return currentUser;
+    }
+    return NULL;
 }
 
 }

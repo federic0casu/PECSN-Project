@@ -12,12 +12,12 @@ simple Cellular
         
     // +-------------------------------------------------------------------------------+
     //  USER Throughput: User's number of bytes received at each timeslot 
-    	@signal[userThroughputSignal](type=simtime_t);
+    	@signal[userThroughputSignal](type=int);
         @statistic[userThroughput](source="userThroughputSignal"; record=vector,mean;);
     // +-------------------------------------------------------------------------------+    
     // +-------------------------------------------------------------------------------+
     //  USER Throughput: User's number of bytes received at each timeslot 
-    	@signal[userResponseTimeSignal](type=int);
+    	@signal[userResponseTimeSignal](type=simtime_t);
         @statistic[userResponseTime](source="userResponseTimeSignal"; record=vector,mean;);
     // +-------------------------------------------------------------------------------+
         

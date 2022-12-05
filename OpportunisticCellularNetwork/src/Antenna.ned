@@ -6,10 +6,10 @@ simple Antenna
     parameters:
         int stage = default(0);
         int population;
-        int timeslot;
-        int maxFrameDim = 25;
+        double timeslot @unit(s);
+        int maxFrameDim = default(25);
     // +-------------------------------------------------------------------------------+
-    //  Scenario: queues of fixed dimension.
+    //  Scenario: queues of fixed dimension
     	int queueDimension;
     // +-------------------------------------------------------------------------------+
     // +-------------------------------------------------------------------------------+
@@ -17,7 +17,7 @@ simple Antenna
     	@signal[throughputSignal](type=int);
         @statistic[throughput](source="throughputSignal"; record=vector;);
     // +-------------------------------------------------------------------------------+
-        // ResponseTime: 
+    //  ResponseTime 
     	@signal[responseTimeSignal](type=simtime_t);
         @statistic[responseTime](source="responseTimeSignal"; record=vector;);
     // +-------------------------------------------------------------------------------+
