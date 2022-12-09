@@ -124,9 +124,10 @@ void Cellular::handleRB(cMessage* msg)
 
 int Cellular::calculateCQI()
 {
-    #ifdef TEST
-    return par("TEST_CQI").intValue();
-    #endif
+    // testing
+    if(par("TEST").boolValue())
+        return par("TEST_CQI").intValue();
+
 
     if(par("typeCQI").boolValue() == false)
         return intuniform(1, par("uniform_r").intValue(), 0);
