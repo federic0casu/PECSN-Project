@@ -34,20 +34,21 @@ O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cc, .msg and .sm files
 OBJS = \
-    $O/Antenna.o \
-    $O/Cellular.o \
-    $O/CQIPacket.o \
-    $O/Frame.o \
-    $O/RB.o \
-    $O/Source.o \
-    $O/UserQueue.o \
-    $O/CQIMessage_m.o \
-    $O/Packet_m.o
+    $O/Antenna/Antenna.o \
+    $O/Cellular/Cellular.o \
+    $O/Source/Source.o \
+    $O/Utility/CQIPacket.o \
+    $O/Utility/RB.o \
+    $O/Utility/UserQueue.o \
+    $O/Messages/CQI_m.o \
+    $O/Messages/Packet_m.o \
+    $O/Messages/RBsPacket_m.o
 
 # Message files
 MSGFILES = \
-    CQIMessage.msg \
-    Packet.msg
+    Messages/CQI.msg \
+    Messages/Packet.msg \
+    Messages/RBsPacket.msg
 
 # SM files
 SMFILES =

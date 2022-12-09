@@ -1,7 +1,6 @@
 namespace opportunisticcellularnetwork;
 
-
-message CQIMessage {
+message CQI {
     int id;
-    int CQI;
+    int CQI_;
 }

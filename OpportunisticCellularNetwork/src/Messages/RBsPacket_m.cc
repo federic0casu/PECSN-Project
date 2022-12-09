@@ -1,5 +1,5 @@
 //
-// Generated file, do not edit! Created by opp_msgtool 6.0 from Packet.msg.
+// Generated file, do not edit! Created by opp_msgtool 6.0 from Messages/RBsPacket.msg.
 //
 
 // Disable warnings about unused variables, empty switch stmts, etc:
@@ -28,7 +28,7 @@
 #include <sstream>
 #include <memory>
 #include <type_traits>
-#include "Packet_m.h"
+#include "RBsPacket_m.h"
 
 namespace omnetpp {
 
@@ -152,94 +152,178 @@ void doParsimUnpacking(omnetpp::cCommBuffer *, T& t)
 
 namespace opportunisticcellularnetwork {
 
-Register_Class(Packet)
+Register_Class(RBsPacket)
 
-Packet::Packet(const char *name, short kind) : ::omnetpp::cPacket(name, kind)
+RBsPacket::RBsPacket(const char *name, short kind) : ::omnetpp::cMessage(name, kind)
 {
 }
 
-Packet::Packet(const Packet& other) : ::omnetpp::cPacket(other)
+RBsPacket::RBsPacket(const RBsPacket& other) : ::omnetpp::cMessage(other)
 {
     copy(other);
 }
 
-Packet::~Packet()
+RBsPacket::~RBsPacket()
 {
+    delete [] this->arrivalTimes;
 }
 
-Packet& Packet::operator=(const Packet& other)
+RBsPacket& RBsPacket::operator=(const RBsPacket& other)
 {
     if (this == &other) return *this;
-    ::omnetpp::cPacket::operator=(other);
+    ::omnetpp::cMessage::operator=(other);
     copy(other);
     return *this;
 }
 
-void Packet::copy(const Packet& other)
+void RBsPacket::copy(const RBsPacket& other)
 {
-    this->size = other.size;
-    this->index = other.index;
-    this->timestamp = other.timestamp;
+    this->destinationUser = other.destinationUser;
+    this->usedRBs = other.usedRBs;
+    this->usedBytes = other.usedBytes;
+    delete [] this->arrivalTimes;
+    this->arrivalTimes = (other.arrivalTimes_arraysize==0) ? nullptr : new ::omnetpp::simtime_t[other.arrivalTimes_arraysize];
+    arrivalTimes_arraysize = other.arrivalTimes_arraysize;
+    for (size_t i = 0; i < arrivalTimes_arraysize; i++) {
+        this->arrivalTimes[i] = other.arrivalTimes[i];
+    }
 }
 
-void Packet::parsimPack(omnetpp::cCommBuffer *b) const
+void RBsPacket::parsimPack(omnetpp::cCommBuffer *b) const
 {
-    ::omnetpp::cPacket::parsimPack(b);
-    doParsimPacking(b,this->size);
-    doParsimPacking(b,this->index);
-    doParsimPacking(b,this->timestamp);
+    ::omnetpp::cMessage::parsimPack(b);
+    doParsimPacking(b,this->destinationUser);
+    doParsimPacking(b,this->usedRBs);
+    doParsimPacking(b,this->usedBytes);
+    b->pack(arrivalTimes_arraysize);
+    doParsimArrayPacking(b,this->arrivalTimes,arrivalTimes_arraysize);
 }
 
-void Packet::parsimUnpack(omnetpp::cCommBuffer *b)
+void RBsPacket::parsimUnpack(omnetpp::cCommBuffer *b)
 {
-    ::omnetpp::cPacket::parsimUnpack(b);
-    doParsimUnpacking(b,this->size);
-    doParsimUnpacking(b,this->index);
-    doParsimUnpacking(b,this->timestamp);
+    ::omnetpp::cMessage::parsimUnpack(b);
+    doParsimUnpacking(b,this->destinationUser);
+    doParsimUnpacking(b,this->usedRBs);
+    doParsimUnpacking(b,this->usedBytes);
+    delete [] this->arrivalTimes;
+    b->unpack(arrivalTimes_arraysize);
+    if (arrivalTimes_arraysize == 0) {
+        this->arrivalTimes = nullptr;
+    } else {
+        this->arrivalTimes = new ::omnetpp::simtime_t[arrivalTimes_arraysize];
+        doParsimArrayUnpacking(b,this->arrivalTimes,arrivalTimes_arraysize);
+    }
 }
 
-int Packet::getSize() const
+int RBsPacket::getDestinationUser() const
 {
-    return this->size;
+    return this->destinationUser;
 }
 
-void Packet::setSize(int size)
+void RBsPacket::setDestinationUser(int destinationUser)
 {
-    this->size = size;
+    this->destinationUser = destinationUser;
 }
 
-int Packet::getIndex() const
+int RBsPacket::getUsedRBs() const
 {
-    return this->index;
+    return this->usedRBs;
 }
 
-void Packet::setIndex(int index)
+void RBsPacket::setUsedRBs(int usedRBs)
 {
-    this->index = index;
+    this->usedRBs = usedRBs;
 }
 
-::omnetpp::simtime_t Packet::getTimestamp() const
+int RBsPacket::getUsedBytes() const
 {
-    return this->timestamp;
+    return this->usedBytes;
 }
 
-void Packet::setTimestamp(::omnetpp::simtime_t timestamp)
+void RBsPacket::setUsedBytes(int usedBytes)
 {
-    this->timestamp = timestamp;
+    this->usedBytes = usedBytes;
 }
 
-class PacketDescriptor : public omnetpp::cClassDescriptor
+size_t RBsPacket::getArrivalTimesArraySize() const
+{
+    return arrivalTimes_arraysize;
+}
+
+::omnetpp::simtime_t RBsPacket::getArrivalTimes(size_t k) const
+{
+    if (k >= arrivalTimes_arraysize) throw omnetpp::cRuntimeError("Array of size %lu indexed by %lu", (unsigned long)arrivalTimes_arraysize, (unsigned long)k);
+    return this->arrivalTimes[k];
+}
+
+void RBsPacket::setArrivalTimesArraySize(size_t newSize)
+{
+    ::omnetpp::simtime_t *arrivalTimes2 = (newSize==0) ? nullptr : new ::omnetpp::simtime_t[newSize];
+    size_t minSize = arrivalTimes_arraysize < newSize ? arrivalTimes_arraysize : newSize;
+    for (size_t i = 0; i < minSize; i++)
+        arrivalTimes2[i] = this->arrivalTimes[i];
+    for (size_t i = minSize; i < newSize; i++)
+        arrivalTimes2[i] = SIMTIME_ZERO;
+    delete [] this->arrivalTimes;
+    this->arrivalTimes = arrivalTimes2;
+    arrivalTimes_arraysize = newSize;
+}
+
+void RBsPacket::setArrivalTimes(size_t k, ::omnetpp::simtime_t arrivalTimes)
+{
+    if (k >= arrivalTimes_arraysize) throw omnetpp::cRuntimeError("Array of size %lu indexed by %lu", (unsigned long)arrivalTimes_arraysize, (unsigned long)k);
+    this->arrivalTimes[k] = arrivalTimes;
+}
+
+void RBsPacket::insertArrivalTimes(size_t k, ::omnetpp::simtime_t arrivalTimes)
+{
+    if (k > arrivalTimes_arraysize) throw omnetpp::cRuntimeError("Array of size %lu indexed by %lu", (unsigned long)arrivalTimes_arraysize, (unsigned long)k);
+    size_t newSize = arrivalTimes_arraysize + 1;
+    ::omnetpp::simtime_t *arrivalTimes2 = new ::omnetpp::simtime_t[newSize];
+    size_t i;
+    for (i = 0; i < k; i++)
+        arrivalTimes2[i] = this->arrivalTimes[i];
+    arrivalTimes2[k] = arrivalTimes;
+    for (i = k + 1; i < newSize; i++)
+        arrivalTimes2[i] = this->arrivalTimes[i-1];
+    delete [] this->arrivalTimes;
+    this->arrivalTimes = arrivalTimes2;
+    arrivalTimes_arraysize = newSize;
+}
+
+void RBsPacket::appendArrivalTimes(::omnetpp::simtime_t arrivalTimes)
+{
+    insertArrivalTimes(arrivalTimes_arraysize, arrivalTimes);
+}
+
+void RBsPacket::eraseArrivalTimes(size_t k)
+{
+    if (k >= arrivalTimes_arraysize) throw omnetpp::cRuntimeError("Array of size %lu indexed by %lu", (unsigned long)arrivalTimes_arraysize, (unsigned long)k);
+    size_t newSize = arrivalTimes_arraysize - 1;
+    ::omnetpp::simtime_t *arrivalTimes2 = (newSize == 0) ? nullptr : new ::omnetpp::simtime_t[newSize];
+    size_t i;
+    for (i = 0; i < k; i++)
+        arrivalTimes2[i] = this->arrivalTimes[i];
+    for (i = k; i < newSize; i++)
+        arrivalTimes2[i] = this->arrivalTimes[i+1];
+    delete [] this->arrivalTimes;
+    this->arrivalTimes = arrivalTimes2;
+    arrivalTimes_arraysize = newSize;
+}
+
+class RBsPacketDescriptor : public omnetpp::cClassDescriptor
 {
   private:
     mutable const char **propertyNames;
     enum FieldConstants {
-        FIELD_size,
-        FIELD_index,
-        FIELD_timestamp,
+        FIELD_destinationUser,
+        FIELD_usedRBs,
+        FIELD_usedBytes,
+        FIELD_arrivalTimes,
     };
   public:
-    PacketDescriptor();
-    virtual ~PacketDescriptor();
+    RBsPacketDescriptor();
+    virtual ~RBsPacketDescriptor();
 
     virtual bool doesSupport(omnetpp::cObject *obj) const override;
     virtual const char **getPropertyNames() const override;
@@ -265,24 +349,24 @@ class PacketDescriptor : public omnetpp::cClassDescriptor
     virtual void setFieldStructValuePointer(omnetpp::any_ptr object, int field, int i, omnetpp::any_ptr ptr) const override;
 };
 
-Register_ClassDescriptor(PacketDescriptor)
+Register_ClassDescriptor(RBsPacketDescriptor)
 
-PacketDescriptor::PacketDescriptor() : omnetpp::cClassDescriptor(omnetpp::opp_typename(typeid(opportunisticcellularnetwork::Packet)), "omnetpp::cPacket")
+RBsPacketDescriptor::RBsPacketDescriptor() : omnetpp::cClassDescriptor(omnetpp::opp_typename(typeid(opportunisticcellularnetwork::RBsPacket)), "omnetpp::cMessage")
 {
     propertyNames = nullptr;
 }
 
-PacketDescriptor::~PacketDescriptor()
+RBsPacketDescriptor::~RBsPacketDescriptor()
 {
     delete[] propertyNames;
 }
 
-bool PacketDescriptor::doesSupport(omnetpp::cObject *obj) const
+bool RBsPacketDescriptor::doesSupport(omnetpp::cObject *obj) const
 {
-    return dynamic_cast<Packet *>(obj)!=nullptr;
+    return dynamic_cast<RBsPacket *>(obj)!=nullptr;
 }
 
-const char **PacketDescriptor::getPropertyNames() const
+const char **RBsPacketDescriptor::getPropertyNames() const
 {
     if (!propertyNames) {
         static const char *names[] = {  nullptr };
@@ -293,19 +377,19 @@ const char **PacketDescriptor::getPropertyNames() const
     return propertyNames;
 }
 
-const char *PacketDescriptor::getProperty(const char *propertyName) const
+const char *RBsPacketDescriptor::getProperty(const char *propertyName) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     return base ? base->getProperty(propertyName) : nullptr;
 }
 
-int PacketDescriptor::getFieldCount() const
+int RBsPacketDescriptor::getFieldCount() const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
-    return base ? 3+base->getFieldCount() : 3;
+    return base ? 4+base->getFieldCount() : 4;
 }
 
-unsigned int PacketDescriptor::getFieldTypeFlags(int field) const
+unsigned int RBsPacketDescriptor::getFieldTypeFlags(int field) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     if (base) {
@@ -314,14 +398,15 @@ unsigned int PacketDescriptor::getFieldTypeFlags(int field) const
         field -= base->getFieldCount();
     }
     static unsigned int fieldTypeFlags[] = {
-        FD_ISEDITABLE,    // FIELD_size
-        FD_ISEDITABLE,    // FIELD_index
-        FD_ISEDITABLE,    // FIELD_timestamp
+        FD_ISEDITABLE,    // FIELD_destinationUser
+        FD_ISEDITABLE,    // FIELD_usedRBs
+        FD_ISEDITABLE,    // FIELD_usedBytes
+        FD_ISARRAY | FD_ISEDITABLE | FD_ISRESIZABLE,    // FIELD_arrivalTimes
     };
-    return (field >= 0 && field < 3) ? fieldTypeFlags[field] : 0;
+    return (field >= 0 && field < 4) ? fieldTypeFlags[field] : 0;
 }
 
-const char *PacketDescriptor::getFieldName(int field) const
+const char *RBsPacketDescriptor::getFieldName(int field) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     if (base) {
@@ -330,24 +415,26 @@ const char *PacketDescriptor::getFieldName(int field) const
         field -= base->getFieldCount();
     }
     static const char *fieldNames[] = {
-        "size",
-        "index",
-        "timestamp",
+        "destinationUser",
+        "usedRBs",
+        "usedBytes",
+        "arrivalTimes",
     };
-    return (field >= 0 && field < 3) ? fieldNames[field] : nullptr;
+    return (field >= 0 && field < 4) ? fieldNames[field] : nullptr;
 }
 
-int PacketDescriptor::findField(const char *fieldName) const
+int RBsPacketDescriptor::findField(const char *fieldName) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     int baseIndex = base ? base->getFieldCount() : 0;
-    if (strcmp(fieldName, "size") == 0) return baseIndex + 0;
-    if (strcmp(fieldName, "index") == 0) return baseIndex + 1;
-    if (strcmp(fieldName, "timestamp") == 0) return baseIndex + 2;
+    if (strcmp(fieldName, "destinationUser") == 0) return baseIndex + 0;
+    if (strcmp(fieldName, "usedRBs") == 0) return baseIndex + 1;
+    if (strcmp(fieldName, "usedBytes") == 0) return baseIndex + 2;
+    if (strcmp(fieldName, "arrivalTimes") == 0) return baseIndex + 3;
     return base ? base->findField(fieldName) : -1;
 }
 
-const char *PacketDescriptor::getFieldTypeString(int field) const
+const char *RBsPacketDescriptor::getFieldTypeString(int field) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     if (base) {
@@ -356,14 +443,15 @@ const char *PacketDescriptor::getFieldTypeString(int field) const
         field -= base->getFieldCount();
     }
     static const char *fieldTypeStrings[] = {
-        "int",    // FIELD_size
-        "int",    // FIELD_index
-        "omnetpp::simtime_t",    // FIELD_timestamp
+        "int",    // FIELD_destinationUser
+        "int",    // FIELD_usedRBs
+        "int",    // FIELD_usedBytes
+        "omnetpp::simtime_t",    // FIELD_arrivalTimes
     };
-    return (field >= 0 && field < 3) ? fieldTypeStrings[field] : nullptr;
+    return (field >= 0 && field < 4) ? fieldTypeStrings[field] : nullptr;
 }
 
-const char **PacketDescriptor::getFieldPropertyNames(int field) const
+const char **RBsPacketDescriptor::getFieldPropertyNames(int field) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     if (base) {
@@ -376,7 +464,7 @@ const char **PacketDescriptor::getFieldPropertyNames(int field) const
     }
 }
 
-const char *PacketDescriptor::getFieldProperty(int field, const char *propertyName) const
+const char *RBsPacketDescriptor::getFieldProperty(int field, const char *propertyName) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     if (base) {
@@ -389,7 +477,7 @@ const char *PacketDescriptor::getFieldProperty(int field, const char *propertyNa
     }
 }
 
-int PacketDescriptor::getFieldArraySize(omnetpp::any_ptr object, int field) const
+int RBsPacketDescriptor::getFieldArraySize(omnetpp::any_ptr object, int field) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     if (base) {
@@ -397,13 +485,14 @@ int PacketDescriptor::getFieldArraySize(omnetpp::any_ptr object, int field) cons
             return base->getFieldArraySize(object, field);
         field -= base->getFieldCount();
     }
-    Packet *pp = omnetpp::fromAnyPtr<Packet>(object); (void)pp;
+    RBsPacket *pp = omnetpp::fromAnyPtr<RBsPacket>(object); (void)pp;
     switch (field) {
+        case FIELD_arrivalTimes: return pp->getArrivalTimesArraySize();
         default: return 0;
     }
 }
 
-void PacketDescriptor::setFieldArraySize(omnetpp::any_ptr object, int field, int size) const
+void RBsPacketDescriptor::setFieldArraySize(omnetpp::any_ptr object, int field, int size) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     if (base) {
@@ -413,13 +502,14 @@ void PacketDescriptor::setFieldArraySize(omnetpp::any_ptr object, int field, int
         }
         field -= base->getFieldCount();
     }
-    Packet *pp = omnetpp::fromAnyPtr<Packet>(object); (void)pp;
+    RBsPacket *pp = omnetpp::fromAnyPtr<RBsPacket>(object); (void)pp;
     switch (field) {
-        default: throw omnetpp::cRuntimeError("Cannot set array size of field %d of class 'Packet'", field);
+        case FIELD_arrivalTimes: pp->setArrivalTimesArraySize(size); break;
+        default: throw omnetpp::cRuntimeError("Cannot set array size of field %d of class 'RBsPacket'", field);
     }
 }
 
-const char *PacketDescriptor::getFieldDynamicTypeString(omnetpp::any_ptr object, int field, int i) const
+const char *RBsPacketDescriptor::getFieldDynamicTypeString(omnetpp::any_ptr object, int field, int i) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     if (base) {
@@ -427,13 +517,13 @@ const char *PacketDescriptor::getFieldDynamicTypeString(omnetpp::any_ptr object,
             return base->getFieldDynamicTypeString(object,field,i);
         field -= base->getFieldCount();
     }
-    Packet *pp = omnetpp::fromAnyPtr<Packet>(object); (void)pp;
+    RBsPacket *pp = omnetpp::fromAnyPtr<RBsPacket>(object); (void)pp;
     switch (field) {
         default: return nullptr;
     }
 }
 
-std::string PacketDescriptor::getFieldValueAsString(omnetpp::any_ptr object, int field, int i) const
+std::string RBsPacketDescriptor::getFieldValueAsString(omnetpp::any_ptr object, int field, int i) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     if (base) {
@@ -441,16 +531,17 @@ std::string PacketDescriptor::getFieldValueAsString(omnetpp::any_ptr object, int
             return base->getFieldValueAsString(object,field,i);
         field -= base->getFieldCount();
     }
-    Packet *pp = omnetpp::fromAnyPtr<Packet>(object); (void)pp;
+    RBsPacket *pp = omnetpp::fromAnyPtr<RBsPacket>(object); (void)pp;
     switch (field) {
-        case FIELD_size: return long2string(pp->getSize());
-        case FIELD_index: return long2string(pp->getIndex());
-        case FIELD_timestamp: return simtime2string(pp->getTimestamp());
+        case FIELD_destinationUser: return long2string(pp->getDestinationUser());
+        case FIELD_usedRBs: return long2string(pp->getUsedRBs());
+        case FIELD_usedBytes: return long2string(pp->getUsedBytes());
+        case FIELD_arrivalTimes: return simtime2string(pp->getArrivalTimes(i));
         default: return "";
     }
 }
 
-void PacketDescriptor::setFieldValueAsString(omnetpp::any_ptr object, int field, int i, const char *value) const
+void RBsPacketDescriptor::setFieldValueAsString(omnetpp::any_ptr object, int field, int i, const char *value) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     if (base) {
@@ -460,16 +551,17 @@ void PacketDescriptor::setFieldValueAsString(omnetpp::any_ptr object, int field,
         }
         field -= base->getFieldCount();
     }
-    Packet *pp = omnetpp::fromAnyPtr<Packet>(object); (void)pp;
+    RBsPacket *pp = omnetpp::fromAnyPtr<RBsPacket>(object); (void)pp;
     switch (field) {
-        case FIELD_size: pp->setSize(string2long(value)); break;
-        case FIELD_index: pp->setIndex(string2long(value)); break;
-        case FIELD_timestamp: pp->setTimestamp(string2simtime(value)); break;
-        default: throw omnetpp::cRuntimeError("Cannot set field %d of class 'Packet'", field);
+        case FIELD_destinationUser: pp->setDestinationUser(string2long(value)); break;
+        case FIELD_usedRBs: pp->setUsedRBs(string2long(value)); break;
+        case FIELD_usedBytes: pp->setUsedBytes(string2long(value)); break;
+        case FIELD_arrivalTimes: pp->setArrivalTimes(i,string2simtime(value)); break;
+        default: throw omnetpp::cRuntimeError("Cannot set field %d of class 'RBsPacket'", field);
     }
 }
 
-omnetpp::cValue PacketDescriptor::getFieldValue(omnetpp::any_ptr object, int field, int i) const
+omnetpp::cValue RBsPacketDescriptor::getFieldValue(omnetpp::any_ptr object, int field, int i) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     if (base) {
@@ -477,16 +569,17 @@ omnetpp::cValue PacketDescriptor::getFieldValue(omnetpp::any_ptr object, int fie
             return base->getFieldValue(object,field,i);
         field -= base->getFieldCount();
     }
-    Packet *pp = omnetpp::fromAnyPtr<Packet>(object); (void)pp;
+    RBsPacket *pp = omnetpp::fromAnyPtr<RBsPacket>(object); (void)pp;
     switch (field) {
-        case FIELD_size: return pp->getSize();
-        case FIELD_index: return pp->getIndex();
-        case FIELD_timestamp: return pp->getTimestamp().dbl();
-        default: throw omnetpp::cRuntimeError("Cannot return field %d of class 'Packet' as cValue -- field index out of range?", field);
+        case FIELD_destinationUser: return pp->getDestinationUser();
+        case FIELD_usedRBs: return pp->getUsedRBs();
+        case FIELD_usedBytes: return pp->getUsedBytes();
+        case FIELD_arrivalTimes: return pp->getArrivalTimes(i).dbl();
+        default: throw omnetpp::cRuntimeError("Cannot return field %d of class 'RBsPacket' as cValue -- field index out of range?", field);
     }
 }
 
-void PacketDescriptor::setFieldValue(omnetpp::any_ptr object, int field, int i, const omnetpp::cValue& value) const
+void RBsPacketDescriptor::setFieldValue(omnetpp::any_ptr object, int field, int i, const omnetpp::cValue& value) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     if (base) {
@@ -496,16 +589,17 @@ void PacketDescriptor::setFieldValue(omnetpp::any_ptr object, int field, int i, 
         }
         field -= base->getFieldCount();
     }
-    Packet *pp = omnetpp::fromAnyPtr<Packet>(object); (void)pp;
+    RBsPacket *pp = omnetpp::fromAnyPtr<RBsPacket>(object); (void)pp;
     switch (field) {
-        case FIELD_size: pp->setSize(omnetpp::checked_int_cast<int>(value.intValue())); break;
-        case FIELD_index: pp->setIndex(omnetpp::checked_int_cast<int>(value.intValue())); break;
-        case FIELD_timestamp: pp->setTimestamp(value.doubleValue()); break;
-        default: throw omnetpp::cRuntimeError("Cannot set field %d of class 'Packet'", field);
+        case FIELD_destinationUser: pp->setDestinationUser(omnetpp::checked_int_cast<int>(value.intValue())); break;
+        case FIELD_usedRBs: pp->setUsedRBs(omnetpp::checked_int_cast<int>(value.intValue())); break;
+        case FIELD_usedBytes: pp->setUsedBytes(omnetpp::checked_int_cast<int>(value.intValue())); break;
+        case FIELD_arrivalTimes: pp->setArrivalTimes(i,value.doubleValue()); break;
+        default: throw omnetpp::cRuntimeError("Cannot set field %d of class 'RBsPacket'", field);
     }
 }
 
-const char *PacketDescriptor::getFieldStructName(int field) const
+const char *RBsPacketDescriptor::getFieldStructName(int field) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     if (base) {
@@ -518,7 +612,7 @@ const char *PacketDescriptor::getFieldStructName(int field) const
     };
 }
 
-omnetpp::any_ptr PacketDescriptor::getFieldStructValuePointer(omnetpp::any_ptr object, int field, int i) const
+omnetpp::any_ptr RBsPacketDescriptor::getFieldStructValuePointer(omnetpp::any_ptr object, int field, int i) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     if (base) {
@@ -526,13 +620,13 @@ omnetpp::any_ptr PacketDescriptor::getFieldStructValuePointer(omnetpp::any_ptr o
             return base->getFieldStructValuePointer(object, field, i);
         field -= base->getFieldCount();
     }
-    Packet *pp = omnetpp::fromAnyPtr<Packet>(object); (void)pp;
+    RBsPacket *pp = omnetpp::fromAnyPtr<RBsPacket>(object); (void)pp;
     switch (field) {
         default: return omnetpp::any_ptr(nullptr);
     }
 }
 
-void PacketDescriptor::setFieldStructValuePointer(omnetpp::any_ptr object, int field, int i, omnetpp::any_ptr ptr) const
+void RBsPacketDescriptor::setFieldStructValuePointer(omnetpp::any_ptr object, int field, int i, omnetpp::any_ptr ptr) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     if (base) {
@@ -542,9 +636,9 @@ void PacketDescriptor::setFieldStructValuePointer(omnetpp::any_ptr object, int f
         }
         field -= base->getFieldCount();
     }
-    Packet *pp = omnetpp::fromAnyPtr<Packet>(object); (void)pp;
+    RBsPacket *pp = omnetpp::fromAnyPtr<RBsPacket>(object); (void)pp;
     switch (field) {
-        default: throw omnetpp::cRuntimeError("Cannot set field %d of class 'Packet'", field);
+        default: throw omnetpp::cRuntimeError("Cannot set field %d of class 'RBsPacket'", field);
     }
 }
 

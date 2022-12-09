@@ -1,6 +1,6 @@
 namespace opportunisticcellularnetwork;
 
-packet Packet {
+message Packet {
     int size;
     int index;
     simtime_t timestamp;

@@ -1,5 +1,5 @@
 //
-// Generated file, do not edit! Created by opp_msgtool 6.0 from CQIMessage.msg.
+// Generated file, do not edit! Created by opp_msgtool 6.0 from Messages/Packet.msg.
 //
 
 // Disable warnings about unused variables, empty switch stmts, etc:
@@ -28,7 +28,7 @@
 #include <sstream>
 #include <memory>
 #include <type_traits>
-#include "CQIMessage_m.h"
+#include "Packet_m.h"
 
 namespace omnetpp {
 
@@ -152,22 +152,22 @@ void doParsimUnpacking(omnetpp::cCommBuffer *, T& t)
 
 namespace opportunisticcellularnetwork {
 
-Register_Class(CQIMessage)
+Register_Class(Packet)
 
-CQIMessage::CQIMessage(const char *name, short kind) : ::omnetpp::cMessage(name, kind)
+Packet::Packet(const char *name, short kind) : ::omnetpp::cMessage(name, kind)
 {
 }
 
-CQIMessage::CQIMessage(const CQIMessage& other) : ::omnetpp::cMessage(other)
+Packet::Packet(const Packet& other) : ::omnetpp::cMessage(other)
 {
     copy(other);
 }
 
-CQIMessage::~CQIMessage()
+Packet::~Packet()
 {
 }
 
-CQIMessage& CQIMessage::operator=(const CQIMessage& other)
+Packet& Packet::operator=(const Packet& other)
 {
     if (this == &other) return *this;
     ::omnetpp::cMessage::operator=(other);
@@ -175,57 +175,71 @@ CQIMessage& CQIMessage::operator=(const CQIMessage& other)
     return *this;
 }
 
-void CQIMessage::copy(const CQIMessage& other)
+void Packet::copy(const Packet& other)
 {
-    this->id = other.id;
-    this->CQI = other.CQI;
+    this->size = other.size;
+    this->index = other.index;
+    this->timestamp = other.timestamp;
 }
 
-void CQIMessage::parsimPack(omnetpp::cCommBuffer *b) const
+void Packet::parsimPack(omnetpp::cCommBuffer *b) const
 {
     ::omnetpp::cMessage::parsimPack(b);
-    doParsimPacking(b,this->id);
-    doParsimPacking(b,this->CQI);
+    doParsimPacking(b,this->size);
+    doParsimPacking(b,this->index);
+    doParsimPacking(b,this->timestamp);
 }
 
-void CQIMessage::parsimUnpack(omnetpp::cCommBuffer *b)
+void Packet::parsimUnpack(omnetpp::cCommBuffer *b)
 {
     ::omnetpp::cMessage::parsimUnpack(b);
-    doParsimUnpacking(b,this->id);
-    doParsimUnpacking(b,this->CQI);
+    doParsimUnpacking(b,this->size);
+    doParsimUnpacking(b,this->index);
+    doParsimUnpacking(b,this->timestamp);
 }
 
-int CQIMessage::getId() const
+int Packet::getSize() const
 {
-    return this->id;
+    return this->size;
 }
 
-void CQIMessage::setId(int id)
+void Packet::setSize(int size)
 {
-    this->id = id;
+    this->size = size;
 }
 
-int CQIMessage::getCQI() const
+int Packet::getIndex() const
 {
-    return this->CQI;
+    return this->index;
 }
 
-void CQIMessage::setCQI(int CQI)
+void Packet::setIndex(int index)
 {
-    this->CQI = CQI;
+    this->index = index;
 }
 
-class CQIMessageDescriptor : public omnetpp::cClassDescriptor
+::omnetpp::simtime_t Packet::getTimestamp() const
+{
+    return this->timestamp;
+}
+
+void Packet::setTimestamp(::omnetpp::simtime_t timestamp)
+{
+    this->timestamp = timestamp;
+}
+
+class PacketDescriptor : public omnetpp::cClassDescriptor
 {
   private:
     mutable const char **propertyNames;
     enum FieldConstants {
-        FIELD_id,
-        FIELD_CQI,
+        FIELD_size,
+        FIELD_index,
+        FIELD_timestamp,
     };
   public:
-    CQIMessageDescriptor();
-    virtual ~CQIMessageDescriptor();
+    PacketDescriptor();
+    virtual ~PacketDescriptor();
 
     virtual bool doesSupport(omnetpp::cObject *obj) const override;
     virtual const char **getPropertyNames() const override;
@@ -251,24 +265,24 @@ class CQIMessageDescriptor : public omnetpp::cClassDescriptor
     virtual void setFieldStructValuePointer(omnetpp::any_ptr object, int field, int i, omnetpp::any_ptr ptr) const override;
 };
 
-Register_ClassDescriptor(CQIMessageDescriptor)
+Register_ClassDescriptor(PacketDescriptor)
 
-CQIMessageDescriptor::CQIMessageDescriptor() : omnetpp::cClassDescriptor(omnetpp::opp_typename(typeid(opportunisticcellularnetwork::CQIMessage)), "omnetpp::cMessage")
+PacketDescriptor::PacketDescriptor() : omnetpp::cClassDescriptor(omnetpp::opp_typename(typeid(opportunisticcellularnetwork::Packet)), "omnetpp::cMessage")
 {
     propertyNames = nullptr;
 }
 
-CQIMessageDescriptor::~CQIMessageDescriptor()
+PacketDescriptor::~PacketDescriptor()
 {
     delete[] propertyNames;
 }
 
-bool CQIMessageDescriptor::doesSupport(omnetpp::cObject *obj) const
+bool PacketDescriptor::doesSupport(omnetpp::cObject *obj) const
 {
-    return dynamic_cast<CQIMessage *>(obj)!=nullptr;
+    return dynamic_cast<Packet *>(obj)!=nullptr;
 }
 
-const char **CQIMessageDescriptor::getPropertyNames() const
+const char **PacketDescriptor::getPropertyNames() const
 {
     if (!propertyNames) {
         static const char *names[] = {  nullptr };
@@ -279,19 +293,19 @@ const char **CQIMessageDescriptor::getPropertyNames() const
     return propertyNames;
 }
 
-const char *CQIMessageDescriptor::getProperty(const char *propertyName) const
+const char *PacketDescriptor::getProperty(const char *propertyName) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     return base ? base->getProperty(propertyName) : nullptr;
 }
 
-int CQIMessageDescriptor::getFieldCount() const
+int PacketDescriptor::getFieldCount() const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
-    return base ? 2+base->getFieldCount() : 2;
+    return base ? 3+base->getFieldCount() : 3;
 }
 
-unsigned int CQIMessageDescriptor::getFieldTypeFlags(int field) const
+unsigned int PacketDescriptor::getFieldTypeFlags(int field) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     if (base) {
@@ -300,13 +314,14 @@ unsigned int CQIMessageDescriptor::getFieldTypeFlags(int field) const
         field -= base->getFieldCount();
     }
     static unsigned int fieldTypeFlags[] = {
-        FD_ISEDITABLE,    // FIELD_id
-        FD_ISEDITABLE,    // FIELD_CQI
+        FD_ISEDITABLE,    // FIELD_size
+        FD_ISEDITABLE,    // FIELD_index
+        FD_ISEDITABLE,    // FIELD_timestamp
     };
-    return (field >= 0 && field < 2) ? fieldTypeFlags[field] : 0;
+    return (field >= 0 && field < 3) ? fieldTypeFlags[field] : 0;
 }
 
-const char *CQIMessageDescriptor::getFieldName(int field) const
+const char *PacketDescriptor::getFieldName(int field) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     if (base) {
@@ -315,22 +330,24 @@ const char *CQIMessageDescriptor::getFieldName(int field) const
         field -= base->getFieldCount();
     }
     static const char *fieldNames[] = {
-        "id",
-        "CQI",
+        "size",
+        "index",
+        "timestamp",
     };
-    return (field >= 0 && field < 2) ? fieldNames[field] : nullptr;
+    return (field >= 0 && field < 3) ? fieldNames[field] : nullptr;
 }
 
-int CQIMessageDescriptor::findField(const char *fieldName) const
+int PacketDescriptor::findField(const char *fieldName) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     int baseIndex = base ? base->getFieldCount() : 0;
-    if (strcmp(fieldName, "id") == 0) return baseIndex + 0;
-    if (strcmp(fieldName, "CQI") == 0) return baseIndex + 1;
+    if (strcmp(fieldName, "size") == 0) return baseIndex + 0;
+    if (strcmp(fieldName, "index") == 0) return baseIndex + 1;
+    if (strcmp(fieldName, "timestamp") == 0) return baseIndex + 2;
     return base ? base->findField(fieldName) : -1;
 }
 
-const char *CQIMessageDescriptor::getFieldTypeString(int field) const
+const char *PacketDescriptor::getFieldTypeString(int field) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     if (base) {
@@ -339,13 +356,14 @@ const char *CQIMessageDescriptor::getFieldTypeString(int field) const
         field -= base->getFieldCount();
     }
     static const char *fieldTypeStrings[] = {
-        "int",    // FIELD_id
-        "int",    // FIELD_CQI
+        "int",    // FIELD_size
+        "int",    // FIELD_index
+        "omnetpp::simtime_t",    // FIELD_timestamp
     };
-    return (field >= 0 && field < 2) ? fieldTypeStrings[field] : nullptr;
+    return (field >= 0 && field < 3) ? fieldTypeStrings[field] : nullptr;
 }
 
-const char **CQIMessageDescriptor::getFieldPropertyNames(int field) const
+const char **PacketDescriptor::getFieldPropertyNames(int field) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     if (base) {
@@ -358,7 +376,7 @@ const char **CQIMessageDescriptor::getFieldPropertyNames(int field) const
     }
 }
 
-const char *CQIMessageDescriptor::getFieldProperty(int field, const char *propertyName) const
+const char *PacketDescriptor::getFieldProperty(int field, const char *propertyName) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     if (base) {
@@ -371,7 +389,7 @@ const char *CQIMessageDescriptor::getFieldProperty(int field, const char *proper
     }
 }
 
-int CQIMessageDescriptor::getFieldArraySize(omnetpp::any_ptr object, int field) const
+int PacketDescriptor::getFieldArraySize(omnetpp::any_ptr object, int field) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     if (base) {
@@ -379,13 +397,13 @@ int CQIMessageDescriptor::getFieldArraySize(omnetpp::any_ptr object, int field) 
             return base->getFieldArraySize(object, field);
         field -= base->getFieldCount();
     }
-    CQIMessage *pp = omnetpp::fromAnyPtr<CQIMessage>(object); (void)pp;
+    Packet *pp = omnetpp::fromAnyPtr<Packet>(object); (void)pp;
     switch (field) {
         default: return 0;
     }
 }
 
-void CQIMessageDescriptor::setFieldArraySize(omnetpp::any_ptr object, int field, int size) const
+void PacketDescriptor::setFieldArraySize(omnetpp::any_ptr object, int field, int size) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     if (base) {
@@ -395,13 +413,13 @@ void CQIMessageDescriptor::setFieldArraySize(omnetpp::any_ptr object, int field,
         }
         field -= base->getFieldCount();
     }
-    CQIMessage *pp = omnetpp::fromAnyPtr<CQIMessage>(object); (void)pp;
+    Packet *pp = omnetpp::fromAnyPtr<Packet>(object); (void)pp;
     switch (field) {
-        default: throw omnetpp::cRuntimeError("Cannot set array size of field %d of class 'CQIMessage'", field);
+        default: throw omnetpp::cRuntimeError("Cannot set array size of field %d of class 'Packet'", field);
     }
 }
 
-const char *CQIMessageDescriptor::getFieldDynamicTypeString(omnetpp::any_ptr object, int field, int i) const
+const char *PacketDescriptor::getFieldDynamicTypeString(omnetpp::any_ptr object, int field, int i) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     if (base) {
@@ -409,13 +427,13 @@ const char *CQIMessageDescriptor::getFieldDynamicTypeString(omnetpp::any_ptr obj
             return base->getFieldDynamicTypeString(object,field,i);
         field -= base->getFieldCount();
     }
-    CQIMessage *pp = omnetpp::fromAnyPtr<CQIMessage>(object); (void)pp;
+    Packet *pp = omnetpp::fromAnyPtr<Packet>(object); (void)pp;
     switch (field) {
         default: return nullptr;
     }
 }
 
-std::string CQIMessageDescriptor::getFieldValueAsString(omnetpp::any_ptr object, int field, int i) const
+std::string PacketDescriptor::getFieldValueAsString(omnetpp::any_ptr object, int field, int i) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     if (base) {
@@ -423,15 +441,16 @@ std::string CQIMessageDescriptor::getFieldValueAsString(omnetpp::any_ptr object,
             return base->getFieldValueAsString(object,field,i);
         field -= base->getFieldCount();
     }
-    CQIMessage *pp = omnetpp::fromAnyPtr<CQIMessage>(object); (void)pp;
+    Packet *pp = omnetpp::fromAnyPtr<Packet>(object); (void)pp;
     switch (field) {
-        case FIELD_id: return long2string(pp->getId());
-        case FIELD_CQI: return long2string(pp->getCQI());
+        case FIELD_size: return long2string(pp->getSize());
+        case FIELD_index: return long2string(pp->getIndex());
+        case FIELD_timestamp: return simtime2string(pp->getTimestamp());
         default: return "";
     }
 }
 
-void CQIMessageDescriptor::setFieldValueAsString(omnetpp::any_ptr object, int field, int i, const char *value) const
+void PacketDescriptor::setFieldValueAsString(omnetpp::any_ptr object, int field, int i, const char *value) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     if (base) {
@@ -441,15 +460,16 @@ void CQIMessageDescriptor::setFieldValueAsString(omnetpp::any_ptr object, int fi
         }
         field -= base->getFieldCount();
     }
-    CQIMessage *pp = omnetpp::fromAnyPtr<CQIMessage>(object); (void)pp;
+    Packet *pp = omnetpp::fromAnyPtr<Packet>(object); (void)pp;
     switch (field) {
-        case FIELD_id: pp->setId(string2long(value)); break;
-        case FIELD_CQI: pp->setCQI(string2long(value)); break;
-        default: throw omnetpp::cRuntimeError("Cannot set field %d of class 'CQIMessage'", field);
+        case FIELD_size: pp->setSize(string2long(value)); break;
+        case FIELD_index: pp->setIndex(string2long(value)); break;
+        case FIELD_timestamp: pp->setTimestamp(string2simtime(value)); break;
+        default: throw omnetpp::cRuntimeError("Cannot set field %d of class 'Packet'", field);
     }
 }
 
-omnetpp::cValue CQIMessageDescriptor::getFieldValue(omnetpp::any_ptr object, int field, int i) const
+omnetpp::cValue PacketDescriptor::getFieldValue(omnetpp::any_ptr object, int field, int i) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     if (base) {
@@ -457,15 +477,16 @@ omnetpp::cValue CQIMessageDescriptor::getFieldValue(omnetpp::any_ptr object, int
             return base->getFieldValue(object,field,i);
         field -= base->getFieldCount();
     }
-    CQIMessage *pp = omnetpp::fromAnyPtr<CQIMessage>(object); (void)pp;
+    Packet *pp = omnetpp::fromAnyPtr<Packet>(object); (void)pp;
     switch (field) {
-        case FIELD_id: return pp->getId();
-        case FIELD_CQI: return pp->getCQI();
-        default: throw omnetpp::cRuntimeError("Cannot return field %d of class 'CQIMessage' as cValue -- field index out of range?", field);
+        case FIELD_size: return pp->getSize();
+        case FIELD_index: return pp->getIndex();
+        case FIELD_timestamp: return pp->getTimestamp().dbl();
+        default: throw omnetpp::cRuntimeError("Cannot return field %d of class 'Packet' as cValue -- field index out of range?", field);
     }
 }
 
-void CQIMessageDescriptor::setFieldValue(omnetpp::any_ptr object, int field, int i, const omnetpp::cValue& value) const
+void PacketDescriptor::setFieldValue(omnetpp::any_ptr object, int field, int i, const omnetpp::cValue& value) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     if (base) {
@@ -475,15 +496,16 @@ void CQIMessageDescriptor::setFieldValue(omnetpp::any_ptr object, int field, int
         }
         field -= base->getFieldCount();
     }
-    CQIMessage *pp = omnetpp::fromAnyPtr<CQIMessage>(object); (void)pp;
+    Packet *pp = omnetpp::fromAnyPtr<Packet>(object); (void)pp;
     switch (field) {
-        case FIELD_id: pp->setId(omnetpp::checked_int_cast<int>(value.intValue())); break;
-        case FIELD_CQI: pp->setCQI(omnetpp::checked_int_cast<int>(value.intValue())); break;
-        default: throw omnetpp::cRuntimeError("Cannot set field %d of class 'CQIMessage'", field);
+        case FIELD_size: pp->setSize(omnetpp::checked_int_cast<int>(value.intValue())); break;
+        case FIELD_index: pp->setIndex(omnetpp::checked_int_cast<int>(value.intValue())); break;
+        case FIELD_timestamp: pp->setTimestamp(value.doubleValue()); break;
+        default: throw omnetpp::cRuntimeError("Cannot set field %d of class 'Packet'", field);
     }
 }
 
-const char *CQIMessageDescriptor::getFieldStructName(int field) const
+const char *PacketDescriptor::getFieldStructName(int field) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     if (base) {
@@ -496,7 +518,7 @@ const char *CQIMessageDescriptor::getFieldStructName(int field) const
     };
 }
 
-omnetpp::any_ptr CQIMessageDescriptor::getFieldStructValuePointer(omnetpp::any_ptr object, int field, int i) const
+omnetpp::any_ptr PacketDescriptor::getFieldStructValuePointer(omnetpp::any_ptr object, int field, int i) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     if (base) {
@@ -504,13 +526,13 @@ omnetpp::any_ptr CQIMessageDescriptor::getFieldStructValuePointer(omnetpp::any_p
             return base->getFieldStructValuePointer(object, field, i);
         field -= base->getFieldCount();
     }
-    CQIMessage *pp = omnetpp::fromAnyPtr<CQIMessage>(object); (void)pp;
+    Packet *pp = omnetpp::fromAnyPtr<Packet>(object); (void)pp;
     switch (field) {
         default: return omnetpp::any_ptr(nullptr);
     }
 }
 
-void CQIMessageDescriptor::setFieldStructValuePointer(omnetpp::any_ptr object, int field, int i, omnetpp::any_ptr ptr) const
+void PacketDescriptor::setFieldStructValuePointer(omnetpp::any_ptr object, int field, int i, omnetpp::any_ptr ptr) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     if (base) {
@@ -520,9 +542,9 @@ void CQIMessageDescriptor::setFieldStructValuePointer(omnetpp::any_ptr object, i
         }
         field -= base->getFieldCount();
     }
-    CQIMessage *pp = omnetpp::fromAnyPtr<CQIMessage>(object); (void)pp;
+    Packet *pp = omnetpp::fromAnyPtr<Packet>(object); (void)pp;
     switch (field) {
-        default: throw omnetpp::cRuntimeError("Cannot set field %d of class 'CQIMessage'", field);
+        default: throw omnetpp::cRuntimeError("Cannot set field %d of class 'Packet'", field);
     }
 }
 

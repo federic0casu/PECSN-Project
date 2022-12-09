@@ -1,10 +1,9 @@
-package opportunisticcellularnetwork;
-
+package opportunisticcellularnetwork.Antenna;
 
 simple Antenna
 {
     parameters:
-        int stage = default(0);
+        int stage       = default(0);
         int population;
         double timeslot @unit(s);
         int maxFrameDim = default(25);
@@ -15,11 +14,7 @@ simple Antenna
     // +-------------------------------------------------------------------------------+
     //  GENERAL Throughput: TOTAL number of bytes sent at each timeslot 
     	@signal[throughputSignal](type=int);
-        @statistic[throughput](source="throughputSignal"; record=vector;);
-    // +-------------------------------------------------------------------------------+
-    //  ResponseTime 
-    	@signal[responseTimeSignal](type=simtime_t);
-        @statistic[responseTime](source="responseTimeSignal"; record=vector;);
+        @statistic[throughput](source="throughputSignal"; record=vector,mean;);
     // +-------------------------------------------------------------------------------+
     gates:
         input  inCellular[population];

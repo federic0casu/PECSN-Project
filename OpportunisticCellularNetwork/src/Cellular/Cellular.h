@@ -5,13 +5,14 @@
 #include <omnetpp.h>
 #include <vector>
 
-#include "CQIMessage_m.h"
-#include "CQIPacket.h"
-#include "Packet_m.h"
-#include "Source.h"
-#include "Frame.h"
+#include "../Utility/Constant.h"
 
-#include "UserQueue.h"
+#include "../Messages/CQI_m.h"
+#include "../Messages/Packet_m.h"
+#include "../Messages/RBsPacket_m.h"
+
+#include "../Utility/CQIPacket.h"
+#include "../Source/Source.h"
 
 using namespace omnetpp;
 
@@ -28,21 +29,22 @@ namespace opportunisticcellularnetwork {
 class Cellular : public cSimpleModule
 {
   private:
-    // signals
+    int receivedBytesTS;
+    int id;
+    bool typeCQI_;
+    double p_;
+// +-------------------------------------------------------------------------------+
+//  Statistics
     simsignal_t userResponseTimeSignal;
     simsignal_t userThroughputSignal;
-
-    int receivedBytesTS;
-    int id_;
-    bool typeCQI_;
-    int CQI_;
-
+// +-------------------------------------------------------------------------------+
+    void handleCQI();
+    void sendCQI();
+    void handleRB(cMessage*);
+    int calculateCQI();
   public:
     virtual void initialize();
-    virtual void handleMessage(cMessage *msg);
-    void extractRB(Frame* frame, Frame *detected); //Extract RBs by Cellular ID
-    int calculateCQI();
-
+    virtual void handleMessage(cMessage*);
 };
 
 };

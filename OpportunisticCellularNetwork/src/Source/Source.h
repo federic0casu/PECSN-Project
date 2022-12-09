@@ -3,6 +3,8 @@
 
 #include <omnetpp.h>
 
+#include "../Messages/Packet_m.h"
+
 using namespace omnetpp;
 
 namespace opportunisticcellularnetwork {

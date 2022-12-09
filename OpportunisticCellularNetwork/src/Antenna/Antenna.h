@@ -6,14 +6,12 @@
 #include <vector>
 
 // message types
-#include "CQIMessage_m.h"
-#include "CQIPacket.h"
-#include "Packet_m.h"
+#include "../Messages/CQI_m.h"
+#include "../Messages/Packet_m.h"
+#include "../Messages/RBsPacket_m.h"
 
-
-#include "Source.h"
-#include "Frame.h"
-#include "UserQueue.h"
+#include "../Utility/CQIPacket.h"
+#include "../Utility/UserQueue.h"
 
 using namespace omnetpp;
 
@@ -39,20 +37,19 @@ class Antenna : public cSimpleModule
 // +-------------------------------------------------------------------------------+
 //  Statistics
     simsignal_t throughputSignal;
-    simsignal_t responseTimeSignal;
     int sentPackets;
     int lostPackets;
 // +-------------------------------------------------------------------------------+
-    virtual void handleSelfMessage(cMessage *msg);
-    virtual void handlePacket(cMessage *msg);
-    virtual void handleCQI(cMessage *msg);
+    virtual void handleSelfMessage(cMessage*);
+    virtual void handlePacket(cMessage*);
+    virtual void handleCQI(cMessage*);
     virtual void handleFrame();
     virtual int CQI_to_BYTES(int);
-    virtual int serveUser(int, int, int*, Frame*);
+    virtual int serveUser(int, int, int*);
     virtual UserQueue* getQueueById(int);
   protected:
     virtual void initialize() override;
-    virtual void handleMessage(cMessage *msg) override;
+    virtual void handleMessage(cMessage*) override;
     virtual void finish() override;
 };
 

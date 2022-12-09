@@ -1,8 +1,8 @@
 package opportunisticcellularnetwork.simulations;
 
-import opportunisticcellularnetwork.Antenna;
-import opportunisticcellularnetwork.Cellular;
-import opportunisticcellularnetwork.Source;
+import opportunisticcellularnetwork.Antenna.*;
+import opportunisticcellularnetwork.Cellular.*;
+import opportunisticcellularnetwork.Source.*;
 
 
 network OpportunisticCellularNetwork

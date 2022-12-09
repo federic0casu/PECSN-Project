@@ -1,5 +1,5 @@
 //
-// Generated file, do not edit! Created by opp_msgtool 6.0 from Packet.msg.
+// Generated file, do not edit! Created by opp_msgtool 6.0 from Messages/Packet.msg.
 //
 
 #ifndef __OPPORTUNISTICCELLULARNETWORK_PACKET_M_H
@@ -27,9 +27,9 @@ class Packet;
 namespace opportunisticcellularnetwork {
 
 /**
- * Class generated from <tt>Packet.msg:3</tt> by opp_msgtool.
+ * Class generated from <tt>Messages/Packet.msg:3</tt> by opp_msgtool.
  * <pre>
- * packet Packet
+ * message Packet
  * {
  *     int size;
  *     int index;
@@ -37,7 +37,7 @@ namespace opportunisticcellularnetwork {
  * }
  * </pre>
  */
-class Packet : public ::omnetpp::cPacket
+class Packet : public ::omnetpp::cMessage
 {
   protected:
     int size = 0;
