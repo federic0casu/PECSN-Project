@@ -16,6 +16,7 @@ Define_Module(Source);
 void Source::initialize()
 {
     simtime_t delay;
+
     #ifdef TEST
     if(par("TEST").isSet())
     {
@@ -25,7 +26,9 @@ void Source::initialize()
     else
     #endif
 
-    delay = exponential((simtime_t)par("exponentialMean"), 0);
+
+    double mean = 1/(par("rate").doubleValue()*1000);
+    delay = exponential(mean, 0);
 
     scheduleAt(simTime() + delay, timerMessage);
 }
@@ -64,7 +67,11 @@ void Source::handleMessage(cMessage *msg)
     return;
     #endif
 
-    delay = exponential((simtime_t)par("exponentialMean"), 0);
+
+
+    double mean = 1/(par("rate").doubleValue()*1000);
+    delay = exponential(mean, 0);
+
     scheduleAt(simTime() + delay, msg);
 
 }

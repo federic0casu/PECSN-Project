@@ -19,7 +19,7 @@ simple Cellular
     	@signal[userResponseTimeSignal](type=simtime_t);
         @statistic[userResponseTime](source="userResponseTimeSignal"; record=vector,mean;);
     // +-------------------------------------------------------------------------------+
-    	int TEST 	 	  = default(0);
+    	bool TEST 	 	  = default(false);
     	int TEST_CQI      = default(0);
     gates:
         input in;

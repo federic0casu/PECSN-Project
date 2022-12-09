@@ -9,14 +9,11 @@ simple Source
  	parameters:
  	    int id;
  	    
- 	    // uniform or exp delay 
- 	    bool isDelayUniform       = default(false);
- 	    
  	    // max packet dimension
     	int maxPacketSize = 75;
     	
     	// mean interarrival time
-    	double exponentialMean @unit(s);
+    	double rate;
 
     	int TEST                  = default(0);
     	double TEST_RATE @unit(s) = default(0s);
