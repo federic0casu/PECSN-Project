@@ -187,9 +187,20 @@ void Antenna::handleFrame()
  * +-----------------------------------------------------------------------------------+
  */
 
+    #ifdef DEBUG
+    showCQIs();
+    #endif
+
+    // To model the (random) delay at wich the CQI responses arrive at the Antenna.
+    shuffle();
+
+    #ifdef DEBUG
+    showCQIs();
+    #endif
+
     // Opportunistic policy: users are served by decreasing CQI -> CQIs has to be sorted
     // in a decreasing order.
-    std::sort(CQIs.begin(), CQIs.end(), [](CQIPacket *X, CQIPacket *Y){ return X->getCQI()>Y->getCQI();});
+    std::sort(CQIs.begin(), CQIs.end(), [](CQIPacket *X, CQIPacket *Y) { return X->getCQI()>Y->getCQI(); });
 
     // Once std::vector CQIs has been sorted the Antenna can pack a new Frame.
     int remainingRBs = par("maxFrameDim"), currentUser, currentCQI;
@@ -214,6 +225,29 @@ void Antenna::handleFrame()
     #ifdef DEBUG
     EV << "Antenna::handleFrame() - TROUGHPUT = " << bytesToSend << endl;
     #endif
+}
+
+void Antenna::shuffle()
+{
+    for (int i = 0; i < CQIs.size() - 1; i++)
+    {
+        // generate a random number 'j' such that 'i <= j < n-1' and
+        // swap the element present at index 'j' with the element
+        // present at current index 'i'
+        int j = i + intuniform(0, CQIs.size()-1-i);
+        std::swap(CQIs[i], CQIs[j]);
+    }
+}
+
+void Antenna::showCQIs()
+{
+    EV << "CQIs : [";
+    for(int i = 0; i < CQIs.size(); i++)
+        if(i == 0)
+            EV << "<" << CQIs[i]->getId() << ", " << CQIs[i]->getCQI() << ">";
+        else
+            EV << ", <" << CQIs[i]->getId() << ", " << CQIs[i]->getCQI() << ">";
+    EV << "]" << endl;
 }
 
 int Antenna::serveUser(int user, int CQI, int* remainingRB)

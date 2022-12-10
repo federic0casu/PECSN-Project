@@ -44,8 +44,10 @@ class Antenna : public cSimpleModule
     virtual void handlePacket(cMessage*);
     virtual void handleCQI(cMessage*);
     virtual void handleFrame();
-    virtual int CQI_to_BYTES(int);
+    virtual void showCQIs();
+    virtual void shuffle();
     virtual int serveUser(int, int, int*);
+    virtual int CQI_to_BYTES(int);
     virtual UserQueue* getQueueById(int);
   protected:
     virtual void initialize() override;

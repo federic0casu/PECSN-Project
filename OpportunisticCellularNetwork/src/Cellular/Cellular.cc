@@ -1,7 +1,7 @@
 #include "Cellular.h"
 
 #define DEBUG ;
-//#define TEST ;
+#define TEST ;
 
 namespace opportunisticcellularnetwork {
 
@@ -47,9 +47,7 @@ void Cellular::initialize()
 
 void Cellular::handleMessage(cMessage *msg)
 {
-    if(msg->isSelfMessage())
-        sendCQI();
-    else if(strcmp(msg->getName(), "CQI") == 0)
+    if(strcmp(msg->getName(), "CQI") == 0)
         handleCQI();
     else
         handleRB(msg);
@@ -71,14 +69,6 @@ void Cellular::handleCQI()
     EV << getName() << id <<"::handleCQI() - A new CQI REQUEST just arrived!" << endl;
     #endif
 
-    cMessage* msg = new cMessage("beep");
-    double delay = uniform(0.00001, 0.00099, 1);
-
-    scheduleAt(simTime() + delay, msg);
-}
-
-void Cellular::sendCQI()
-{
     // New CQI RESPONSE to send
     int CQI_ = calculateCQI();
     CQI* cqi = new CQI();

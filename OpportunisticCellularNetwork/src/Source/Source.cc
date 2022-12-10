@@ -1,7 +1,7 @@
 #include "Source.h"
 
 #define DEBUG ;
-//#define TEST ;
+#define TEST ;
 
 namespace opportunisticcellularnetwork {
 
@@ -19,8 +19,8 @@ void Source::initialize()
     #ifdef TEST
     if(par("TEST").isSet())
     {
-        delay = par("TEST_RATE").doubleValue();
-        EV << getName() << par("id").intValue()%2 << "::initialize() - TEST " << par("TEST").intValue() << ": PACKET SIZE = " << par("TEST_SIZE").intValue() << ", ARRIVAL RATE = " << delay << " s" << endl;
+        delay = par("TEST_PERIOD").doubleValue();
+        EV << getName() << par("id").intValue()%2 << "::initialize() - TEST " << par("TEST").intValue() << ": PACKET SIZE = " << par("TEST_SIZE").intValue() << ", ARRIVAL PERIOD = " << par("TEST_PERIOD").doubleValue() << " s" << endl;
     }
     else
     #endif
@@ -50,7 +50,7 @@ void Source::handleMessage(cMessage *msg)
     packet->setIndex(par("id"));
 
     #ifdef DEBUG
-    EV << getName() << par("id").intValue()%2 << "::handleMessage() - Packet (Size=" << packet->getSize() << ") sent at " << packet->getTimestamp() << endl;
+    EV << getName() << par("id").intValue()%getParentModule()->par("population").intValue() << "::handleMessage() - Packet (Size=" << packet->getSize() << ") sent at " << packet->getTimestamp() << endl;
     #endif
 
     // sending out the message
@@ -59,7 +59,7 @@ void Source::handleMessage(cMessage *msg)
     // re-scheduling timer
     simtime_t delay;
     #ifdef TEST
-    delay = par("TEST_RATE").doubleValue();
+    delay = par("TEST_PERIOD").doubleValue();
     scheduleAt(simTime() + delay, msg);
     return;
     #endif

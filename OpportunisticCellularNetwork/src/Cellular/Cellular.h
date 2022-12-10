@@ -39,7 +39,6 @@ class Cellular : public cSimpleModule
     simsignal_t userThroughputSignal;
 // +-------------------------------------------------------------------------------+
     void handleCQI();
-    void sendCQI();
     void handleRB(cMessage*);
     int calculateCQI();
   public:
