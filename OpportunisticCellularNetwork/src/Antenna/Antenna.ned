@@ -16,6 +16,11 @@ simple Antenna
     	@signal[throughputSignal](type=int);
         @statistic[throughput](source="throughputSignal"; record=vector,mean;);
     // +-------------------------------------------------------------------------------+
+    // +-------------------------------------------------------------------------------+
+    //  Backologged Packets 
+    	@signal[backloggedPacketsSignal](type=int);
+        @statistic[backloggedPackets](source="backloggedPacketsSignal"; record=vector,mean;);
+    // +-------------------------------------------------------------------------------+
     gates:
         input  inCellular[population];
         input  inSource[population];

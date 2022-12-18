@@ -37,8 +37,10 @@ class Antenna : public cSimpleModule
 // +-------------------------------------------------------------------------------+
 //  Statistics
     simsignal_t throughputSignal;
+    simsignal_t backloggedPacketsSignal;
     int sentPackets;
     int lostPackets;
+    int backloggedPackets;
 // +-------------------------------------------------------------------------------+
     virtual void handleSelfMessage(cMessage*);
     virtual void handlePacket(cMessage*);

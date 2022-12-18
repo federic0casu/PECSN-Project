@@ -16,16 +16,35 @@ Define_Module(Source);
 void Source::initialize()
 {
     simtime_t delay;
+    double mean = 0.0;
+
     #ifdef TEST
-    if(par("TEST").isSet())
+    if(par("TEST_PERIOD").doubleValue() != 0)
     {
         delay = par("TEST_PERIOD").doubleValue();
-        EV << getName() << par("id").intValue()%2 << "::initialize() - TEST " << par("TEST").intValue() << ": PACKET SIZE = " << par("TEST_SIZE").intValue() << ", ARRIVAL PERIOD = " << par("TEST_PERIOD").doubleValue() << " s" << endl;
+        EV << getName() << par("id").intValue()%2 << "::initialize() - TEST " << par("TEST").intValue() << ": PACKET SIZE = " << par("TEST_SIZE").intValue() << ", ARRIVAL PERIOD = " << delay << " s" << endl;
     }
     else
+    {
+        mean = 1/(par("RATE").doubleValue()*1000);
+        delay = exponential(mean, 0);
+        EV << getName() << par("id").intValue()%2 << "::initialize() - TEST " << par("TEST").intValue() << ": PACKET SIZE = " << par("TEST_SIZE").intValue() << ", MEAN ARRIVAL RATE = " << mean << endl;
+    }
+
+    scheduleAt(simTime() + delay, timerMessage);
+    return;
     #endif
 
-    delay = exponential((simtime_t)par("exponentialMean"), 0);
+
+    #ifdef DEBUG
+    if(getParentModule()->par("stage").intValue() == 0)
+        EV << getName() << par("id").intValue()%2 << "::initialize() - Scenario 0: queues of infinite dimension, population: " << getParentModule()->par("population").intValue() << endl;
+    else
+        EV << getName() << par("id").intValue()%2 << "::initialize() - Scenario 1: queues of finite dimension, population: " << getParentModule()->par("population").intValue() << endl;
+    #endif
+
+    mean = 1/(par("RATE").doubleValue()*1000);
+    delay = exponential(mean, 0);
 
     scheduleAt(simTime() + delay, timerMessage);
 }
@@ -39,11 +58,11 @@ void Source::handleMessage(cMessage *msg)
     // generating packet size and timestamp
     int size;
     #ifdef TEST
-    if(par("TEST").isSet())
+    if(par("TEST_SIZE").intValue() != 0)
         size = par("TEST_SIZE").intValue();
     else
     #endif
-    size = intuniform(0,par("maxPacketSize"), 1);
+    size = intuniform(0, par("maxPacketSize"), 1);
 
     packet->setSize(size);
     packet->setTimestamp(simTime());
@@ -58,13 +77,19 @@ void Source::handleMessage(cMessage *msg)
 
     // re-scheduling timer
     simtime_t delay;
+
     #ifdef TEST
-    delay = par("TEST_PERIOD").doubleValue();
-    scheduleAt(simTime() + delay, msg);
-    return;
+    if(par("TEST_PERIOD").doubleValue() != 0)
+    {
+        delay = par("TEST_PERIOD").doubleValue();
+        scheduleAt(simTime() + delay, msg);
+        return;
+    }
     #endif
 
-    delay = exponential((simtime_t)par("exponentialMean"), 0);
+    double mean = 1/(par("RATE").doubleValue()*1000);
+    delay = exponential(mean, 0);
+
     scheduleAt(simTime() + delay, msg);
 
 }

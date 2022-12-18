@@ -25,7 +25,6 @@ namespace opportunisticcellularnetwork {
  * +-------------------------------------------------------------------------------+
  */
 
-
 class Cellular : public cSimpleModule
 {
   private:

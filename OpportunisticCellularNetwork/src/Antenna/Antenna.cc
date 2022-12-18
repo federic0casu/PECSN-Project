@@ -27,7 +27,10 @@ void Antenna::initialize()
     // Register throughput signal
     throughputSignal = registerSignal("throughputSignal");
 
-    lostPackets = sentPackets = 0;
+    // Register backlogged packtes signal
+    backloggedPacketsSignal = registerSignal("backloggedPacketsSignal");
+
+    lostPackets = sentPackets = backloggedPackets = 0;
 
     switch(par("stage").intValue()) {
         case 1:
@@ -117,6 +120,10 @@ void Antenna::handlePacket(cMessage *msg) {
         #ifdef DEBUG
         queue->showQueue();
         #endif
+
+        backloggedPackets++;
+
+        emit(backloggedPacketsSignal, backloggedPackets);
     }
 
     // Since the message is no more useful, it will be 'deleted' to avoid any memory leak.
@@ -222,8 +229,12 @@ void Antenna::handleFrame()
     // Recording throughtput's statistics
     emit(throughputSignal, bytesToSend);
 
+    // Recording backlog's statistics
+    emit(backloggedPacketsSignal, backloggedPackets);
+
     #ifdef DEBUG
     EV << "Antenna::handleFrame() - TROUGHPUT = " << bytesToSend << endl;
+    EV << "Antenna::handleFrame() - BACKLOG = " << backloggedPackets << endl;
     #endif
 }
 
@@ -293,6 +304,7 @@ int Antenna::serveUser(int user, int CQI, int* remainingRB)
             EV << "\t\t\t\t\t\tA NEW packet has been allocated (size=" << pkt.second << ")" << endl;
             #endif
 
+            backloggedPackets--;
         }
         else
         {

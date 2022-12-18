@@ -9,7 +9,7 @@ network OpportunisticCellularNetwork
 {
     parameters:
         int population;
-        @display("bgb=,,#DFDFDF,,1");
+        @display("bgb=,,#DDDDDD,,1");
     submodules:
         antenna: Antenna {
             @display("i=device/antennatower,,0;is=vl;p=298,73");
@@ -25,7 +25,7 @@ network OpportunisticCellularNetwork
     connections:
         for i=0..(population-1) {
             cellular[i].out --> antenna.inCellular++;
-            source[i].out   --> antenna.inSource++;
-            antenna.out++   --> cellular[i].in;
+            source[i].out --> antenna.inSource++;
+            antenna.out++ --> cellular[i].in;
         }
 }
