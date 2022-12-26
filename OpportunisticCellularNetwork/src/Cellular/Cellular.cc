@@ -1,7 +1,7 @@
 #include "Cellular.h"
 
 #define DEBUG ;
-#define TEST ;
+// #define TEST ;
 
 namespace opportunisticcellularnetwork {
 
@@ -114,9 +114,10 @@ void Cellular::handleRB(cMessage* msg)
 
 int Cellular::calculateCQI()
 {
-    // testing
+    #ifdef TEST
     if(par("TEST_CQI").isSet())
         return par("TEST_CQI").intValue();
+    #endif
 
 
     if(par("typeCQI").boolValue() == false)

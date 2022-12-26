@@ -1,7 +1,7 @@
 #include "Source.h"
 
 #define DEBUG ;
-#define TEST ;
+// #define TEST ;
 
 namespace opportunisticcellularnetwork {
 
@@ -17,6 +17,8 @@ void Source::initialize()
 {
     simtime_t delay;
     double mean = 0.0;
+
+    timerMessage = new cMessage("beep");
 
     #ifdef TEST
     if(par("TEST_PERIOD").doubleValue() != 0)
@@ -37,16 +39,20 @@ void Source::initialize()
 
 
     #ifdef DEBUG
-    if(getParentModule()->par("stage").intValue() == 0)
-        EV << getName() << par("id").intValue()%2 << "::initialize() - Scenario 0: queues of infinite dimension, population: " << getParentModule()->par("population").intValue() << endl;
+    if(par("stage").intValue() == 0)
+        EV << getName() << par("id").intValue()%2 << "::initialize() - Scenario 0 - queues of infinite dimension, population = " << getParentModule()->par("population").intValue() << ", EXPONENTIAL MEAN = " << par("RATE").doubleValue() << " ms" << endl;
     else
-        EV << getName() << par("id").intValue()%2 << "::initialize() - Scenario 1: queues of finite dimension, population: " << getParentModule()->par("population").intValue() << endl;
+        EV << getName() << par("id").intValue()%2 << "::initialize() - Scenario 1 - queues of finite dimension, population = " << getParentModule()->par("population").intValue() << ", EXPONENTIAL MEAN = " << par("RATE").doubleValue() << " ms" << endl;
     #endif
 
     mean = 1/(par("RATE").doubleValue()*1000);
     delay = exponential(mean, 0);
 
     scheduleAt(simTime() + delay, timerMessage);
+
+    #ifdef DEBUG
+    EV << getName() << par("id").intValue()%2 << "::initialize() - simTime() + delay = " << simTime() + delay << endl;
+    #endif
 }
 
 
@@ -92,7 +98,9 @@ void Source::handleMessage(cMessage *msg)
 
     scheduleAt(simTime() + delay, msg);
 
+    #ifdef DEBUG
+    EV << getName() << par("id").intValue()%2 << "::handleMessage() - simTime() + delay = " << simTime() + delay << endl;
+    #endif
 }
 
 }
-

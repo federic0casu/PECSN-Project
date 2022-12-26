@@ -17,7 +17,7 @@ namespace opportunisticcellularnetwork {
 class Source : public cSimpleModule
 {
   private:
-    cMessage *timerMessage = new cMessage("beep");
+    cMessage* timerMessage;
   protected:
     virtual void initialize() override;
     virtual void handleMessage(cMessage *msg) override;

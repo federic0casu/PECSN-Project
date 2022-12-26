@@ -15,7 +15,9 @@ simple Source
  	    // max packet dimension
     	int    maxPacketSize = 75;
     	
-    	double RATE                     = default(1);
+    	int stage						= default(0);
+    	
+    	double RATE @unit(ms)            = default(1ms);
 
     	int    TEST                     = default(0);
     	double TEST_PERIOD @unit(s)     = default(0s);
