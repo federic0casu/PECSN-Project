@@ -41,7 +41,7 @@ void Cellular::initialize()
         EV << getName() << id << "::initialize() - Scenario 0: CQI ~ U(1, 15)" << endl;
     else
         // Scenario 1: binomial CQI.
-        EV << getName() << id << "::initialize() - Scenario 1: CQI ~ Bin(" << par("binomial_n").intValue() << ", " << par("binomial_p").doubleValue() << ")" << endl;
+        EV << getName() << id << "::initialize() - Scenario 1: CQI ~ Bin(" << population << ", " << p_ << ")" << endl;
     #endif
 }
 
