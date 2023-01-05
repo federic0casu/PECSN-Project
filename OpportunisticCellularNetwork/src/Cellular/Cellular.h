@@ -29,6 +29,7 @@ class Cellular : public cSimpleModule
 {
   private:
     int receivedBytesTS;
+    int receivedPackets;
     int id;
     bool typeCQI_;
     double p_;
@@ -41,6 +42,7 @@ class Cellular : public cSimpleModule
     void handleRB(cMessage*);
     int calculateCQI();
   public:
+    virtual void finish();
     virtual void initialize();
     virtual void handleMessage(cMessage*);
 };

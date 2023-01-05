@@ -5,6 +5,8 @@ simple Cellular
 {
     parameters:
         int id;
+        bool stop         = default(false);
+        int packets       = default(0);
         bool typeCQI      = default(false);     //default: uniform
         int uniform_r     = default(0); 		// range for uniform random generator  
         int binomial_n    = default(0); 		// param n for binomial distribution

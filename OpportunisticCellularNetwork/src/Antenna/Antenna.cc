@@ -71,7 +71,17 @@ void Antenna::handleMessage(cMessage *msg)
         handleSelfMessage(msg);
     // A new CQI arrives
     else if(msg->arrivedOn("inCellular"))
-        handleCQI(msg);
+    {
+        if(strcmp(msg->getName(), "END") == 0)
+        {
+            for(int i = 0; i < population; i++)
+                send(new cMessage("END"), "out", i);
+            delete(msg);
+            endSimulation();
+        }
+        else
+            handleCQI(msg);
+    }
     // A new PACKET arrives
     else
         handlePacket(msg);
@@ -79,6 +89,9 @@ void Antenna::handleMessage(cMessage *msg)
 
 void Antenna::finish()
 {
+    #ifdef DEBUG
+    EV << "Antenna::finish()" << endl;
+    #endif
 // +-----------------------------------------------------------------------------+
 //  Packet loss (%): % of packets that cannot be queued
     if(par("stage").intValue() == 1)

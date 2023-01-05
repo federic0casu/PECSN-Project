@@ -19,7 +19,7 @@ void Cellular::initialize()
     userThroughputSignal = registerSignal("userThroughputSignal");
     userResponseTimeSignal = registerSignal("userResponseTimeSignal");
 
-    receivedBytesTS = 0;
+    receivedBytesTS = receivedPackets = 0;
 
     id = par("id").intValue();
     typeCQI_ = par("typeCQI").boolValue();
@@ -28,7 +28,7 @@ void Cellular::initialize()
     int population = getParentModule()->par("population").intValue();
 
     //Scale the p_ value between [0,1]
-    p_ = (double)(id + 0.5)/(population);
+    p_ = (double)par("binomial_p").doubleValue();
 
     #ifdef TEST
     EV << getName() << id << "::initialize() - TEST " << par("TEST").intValue() << ": CQI = " << calculateCQI() << endl;
@@ -49,6 +49,11 @@ void Cellular::handleMessage(cMessage *msg)
 {
     if(strcmp(msg->getName(), "CQI") == 0)
         handleCQI();
+    else if(strcmp(msg->getName(), "END") == 0)
+    {
+        delete(msg);
+        endSimulation();
+    }
     else
         handleRB(msg);
 
@@ -102,6 +107,16 @@ void Cellular::handleRB(cMessage* msg)
         #ifdef DEBUG
         EV << "\t\t\t\t\t\t" << getName() << id <<"::handleRB() -  ResponseTime = "<< simTime() - RBs->getArrivalTimes(i) << endl;
         #endif
+        receivedPackets++;
+        if(par("stop").boolValue() && receivedPackets >= par("packets").intValue())
+        {
+            emit(userThroughputSignal, receivedBytesTS);
+            #ifdef DEBUG
+            EV << "\t\t\t\t\t\t" << getName() << id <<"::handleRB() -  ThroughputTS = "<< receivedBytesTS << endl;
+            #endif
+            send(new cMessage("END"), "out");
+            endSimulation();
+        }
     }
 
     emit(userThroughputSignal, receivedBytesTS);
@@ -110,6 +125,13 @@ void Cellular::handleRB(cMessage* msg)
     #endif
 
     receivedBytesTS = 0;
+}
+
+void Cellular::finish()
+{
+    #ifdef DEBUG
+    EV << getName() << id << "::finish()" << endl;
+    #endif
 }
 
 int Cellular::calculateCQI()
@@ -124,7 +146,7 @@ int Cellular::calculateCQI()
         return intuniform(1, par("uniform_r").intValue(), 0);
     else
         // Shift the value [0,14] => [1,15]
-        return binomial(par("rangeCQI").intValue() - 1, p_, 0) + 1;
+        return binomial(par("binomial_n").intValue() - 1, par("binomial_p").doubleValue(), 0) + 1;
 }
 
 };
