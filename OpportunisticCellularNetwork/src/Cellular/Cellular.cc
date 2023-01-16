@@ -1,6 +1,6 @@
 #include "Cellular.h"
 
-#define DEBUG ;
+// #define DEBUG ;
 // #define TEST ;
 
 namespace opportunisticcellularnetwork {

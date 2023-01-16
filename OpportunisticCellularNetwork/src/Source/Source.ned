@@ -11,13 +11,10 @@ simple Source
  	    
  	    // uniform or exp delay 
  	    bool   isDelayUniform           = default(false);
- 	    
  	    // max packet dimension
     	int    maxPacketSize = 75;
-    	
     	int stage						= default(0);
-    	
-    	double RATE @unit(ms)            = default(1ms);
+    	double RATE                     = default(1);
 
     	int    TEST                     = default(0);
     	double TEST_PERIOD @unit(s)     = default(0s);

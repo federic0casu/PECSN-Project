@@ -1,6 +1,6 @@
 #include "Antenna.h"
 
-#define DEBUG ;
+// #define DEBUG ;
 
 namespace opportunisticcellularnetwork {
 
