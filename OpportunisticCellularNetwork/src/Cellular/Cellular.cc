@@ -27,7 +27,7 @@ void Cellular::initialize()
     //Get the Parent parameter "population"
     int population = getParentModule()->par("population").intValue();
 
-    //Scale the p_ value between [0,1]
+    // Scale the p_ value between [0,1]
     p_ = (double)par("binomial_p").doubleValue();
 
     #ifdef TEST

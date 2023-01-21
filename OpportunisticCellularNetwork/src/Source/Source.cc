@@ -61,7 +61,7 @@ void Source::handleMessage(cMessage *msg)
     // When timer message arrives, a packet gets forwarded out
     Packet *packet = new Packet("packet");
 
-    // generating packet size and timestamp
+    // Generating packet size and timestamp
     int size;
     #ifdef TEST
     if(par("TEST_SIZE").intValue() != 0)
